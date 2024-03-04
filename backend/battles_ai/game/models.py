@@ -9,7 +9,7 @@ class ChatSession(models.Model):
     OpenAI_thread_id = models.CharField(max_length=127, blank=True)
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    is_successful = models.BooleanField(default=False)
+    is_successful = models.BooleanField(null=True, default=None)
     user_ip = models.CharField(max_length=15)
     user_language = models.CharField(max_length=5, default='EN')
     
