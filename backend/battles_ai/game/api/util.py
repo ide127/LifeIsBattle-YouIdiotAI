@@ -1,7 +1,39 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
 
+
+@swagger_auto_schema(
+    method='post',
+    operation_description= \
+        """
+        This endpoint calculates the score based on the number of characters in the input string.
+        The score is calculated as 100 - (num_str/5000).
+        If the language is Korean, the input string is doubled before the score is calculated.
+        
+        **Request Example**:
+        ```json
+        {
+            "num_str": "2581",
+            "language": "KO"
+        }
+        ```
+        - **num_str** : the number of characters.
+        - **language** : Language code of the user. Defaults to 'EN'.
+        
+        
+        **Return Example**:
+        ```json
+        {
+            "score": "48.79087"
+        }
+        ```
+        
+        """,
+    responses={200: 'OK.',
+               400: 'Invalid input.'},
+)
 @api_view(['POST'])
 def calc_score(request):
     try:
