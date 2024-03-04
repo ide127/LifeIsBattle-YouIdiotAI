@@ -14,7 +14,7 @@ class ChatSession(models.Model):
     user_language = models.CharField(max_length=5, default='EN')
     
     def __str__(self):
-        return f'Session {self.id} - {self.start_time}'
+        return f'ID: {self.id} - start: {self.start_time} - end: {self.end_time}'
 
 class Message(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -24,7 +24,8 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.text[:50]
+        return f'ID: {self.id} - text: {self.text[:50]}...'
+        
 
 class Leaderboard(models.Model):
     nickname = models.CharField(max_length=30, unique=True)
