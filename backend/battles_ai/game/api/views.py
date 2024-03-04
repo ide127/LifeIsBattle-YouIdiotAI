@@ -162,6 +162,18 @@ class LeaderboardViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         operation_description= \
             """
+            This returns the dec leaderboard records with pagination.
+            Let's say there are 10 scores, [10, 9, 8, 7, 6, 5, 4, 3, 2, 1].
+            If you set the limit to 3, the first page will return [10, 9, 8].
+            However if you set the offset to 1 with the limit value, the first page will return [9, 8, 7].
+            """
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    @swagger_auto_schema(
+        operation_description= \
+            """
             This creates a new leaderboard record and returns the leaderboard entry.
             
             **Request Example**:
