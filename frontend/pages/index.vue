@@ -86,7 +86,7 @@ import { useRequestHeaders } from '#app'
 const showModal = ref(false);
 
 /**
- *
+ * chatting 하는 곳으로 이동하는 버튼
  */
 function scrollIntoMessageSubmit() {
   const element = document.querySelector('.chat-container');
@@ -210,7 +210,6 @@ const strategies = ref([
 
 
 function openModal() {
-  console.log("test")
   showModal.value = !showModal.value
 }
 </script>
