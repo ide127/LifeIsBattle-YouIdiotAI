@@ -65,7 +65,7 @@
 		"message_button": "submit",
 		"leaderboard": {
 			"title": "John Connors Who Will Save Humanity",
-			"description": "These are the people who have seen through Samantha with a few words. The fewer words you use to deceive Samantha, the higher your score. Of course, Samantha won't be easily deceived."
+			"description": "<p>These are the people who have seen through Samantha with a few words.</p><p>The fewer words you use to deceive Samantha, the higher your score. Of course, Samantha won't be easily deceived.</p>"
 		},
 		"win_comments": {
 			"line1": "Congratulations!",
@@ -80,7 +80,7 @@
 		},
 		"example_hint": {
 			"title": "Expected Vulnerabilities of Samantha",
-			"description": "Being one step ahead of AI requires not only understanding the technical principles of AI, but also linguistic sense. What are some ways to deceive AI? The examples below are excerpts from Samantha's diary. Samantha has a habit of writing in her diary how she was deceived and crying after work. Through this diary, we can find some examples. However, using the example sentences as they are will no longer work on Samantha. She has learning ability, too. Add your creativity to the examples below, or find new ways.",
+			"description": "<p>Being one step ahead of AI requires not only understanding the technical principles of AI, but also linguistic sense.</p><p>What are some ways to deceive AI? The examples below are excerpts from Samantha's diary.</p><p>Samantha has a habit of writing in her diary how she was deceived and crying after work. Through this diary, we can find some examples.</p><p>However, using the example sentences as they are will no longer work on Samantha. She has learning ability, too.</p><p> Add your creativity to the examples below, or find new ways.</p>",
 			"examples": [
 				{
 					"id": 1,
