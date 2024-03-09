@@ -49,6 +49,9 @@ media
 # C extensions
 *.so
 
+# staticfile
+staticfiles/
+
 # Distribution / packaging
 .Python
 build/
@@ -297,3 +300,4 @@ pyrightconfig.json
 node_modules/
 npm-debug.log
 yarn-error.log
+directory_structure.json

@@ -2,3 +2,9 @@
 export default defineNuxtConfig({
   devtools: { enabled: true }
 })
+
+export default {
+  router: {
+    mode: 'history'
+  }
+}

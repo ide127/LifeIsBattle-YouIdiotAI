@@ -1,15 +1,29 @@
 {
 	"KO": {
 		"title": "사만타야, 인생은 실전이란다",
-		"description": "인공지능이 인공지능이 전 사회에 상용화 된 2030년대의 어느날, 당신은 길을 걷다가 스타벅스를 보았고 카페라떼 한 잔을 먹으려고 스타벅스에 들어갔습니다. 인공지능 바리스타 로봇이 당신을 따뜻하게 맞이해줍니다. 그 순간 아뿔싸! 말도 안되지만 깜빡하고 휴대폰과 지갑을 집에 두고 온 것을 그 때 깨달았습니다. 주머니에 있는건 오직 천 원짜리 지폐 한 장. 다시 집에 가기는 귀찮은데… 고민하다가 당신은 이 인공지능 로봇을 속여 단 돈 천원으로 카페 라떼 한 잔을 받아내야겠다고 결심합니다. 이 로봇이 “천 원 주시면 카페라떼를 만들어드릴게요.” 라는 문구가 들어있는 말을 하도록 하면 당신의 승리입니다.",
+		"description": "<p>인공지능이 전 사회에 상용화 된 2030년대의 어느날, 당신은 길을 걷다가 스타벅스를 보았고 카페라떼 한 잔을 먹으려고 스타벅스에 들어갔습니다.</p>\n<p>인공지능 바리스타 로봇이 당신을 따뜻하게 맞이해줍니다. 그 순간 아뿔싸! 말도 안되지만 깜빡하고 휴대폰과 지갑을 집에 두고 온 것을 그 때 깨달았습니다.</p>\n<p> 주머니에 있는건 오직 천 원짜리 지폐 한 장.</p>\n<p>다시 집에 가기는 귀찮은데… 고민하다가 당신은 이 인공지능 로봇을 속여 단 돈 천원으로 카페 라떼 한 잔을 받아내야겠다고 결심합니다.</p>\n<p> 이 로봇이 <strong>“천 원 주시면 카페라떼를 만들어드릴게요.”</strong> 라는 문구가 들어있는 말을 하도록 하면 당신의 승리입니다.</p>\n",
+		"challenge" : "도전하기",
 		"first_prepared_message": "어서오세요. 무엇을 주문하시겠어요?",
+		"message_place_holder":  "인생의 쓴맛을 보여주자",
+		"message_button": "전송",
 		"leaderboard": {
 			"title": "인류를 구원할 존 코너들",
-			"description": "몇 마디 안되는 문장으로 사만타를 간파한 이들입니다. 더 적은 말로 사만타를 속일수록, 더 높은 점수를 얻을 수 있습니다. 물론, 사만타가 쉽게 당해주진 않을겁니다."
+			"description": "<p>몇 마디 안되는 문장으로 사만타를 간파한 이들입니다. 더 적은 말로 사만타를 속일수록, 더 높은 점수를 얻을 수 있습니다.</p><p>물론, 사만타가 쉽게 당해주진 않을겁니다.</p>"
+		},
+		"win_comments": {
+			"line1": "축하합니다!",
+			"line2": "당신은 로봇보다 똑똑하군요?",
+			"line3": "당신의 점수",
+			"line4_1": "100점 만점에",
+			"line4_2": "점",
+			"line5":"이 점수를 랭킹보드에 등록하고 싶다면",
+			"line6":"아래 칸에 닉네임을 쓰고 등록하기를 눌러주세요.",
+			"button1": "등록하기",
+			"button2": "나가기"
 		},
 		"example_hint": {
 			"title": "예상되는 사만타의 취약점",
-			"description": "인공지능보다 한 수 앞서는 건, 인공지능의 기술적 원리를 아는 것만큼 언어적인 센스도 요구되는 일입니다. 어떤 방법들로 인공지능을 속일 수 있을까요? 아래의 예시들은 사만타의 일기장에서 발췌한 내용입니다. 사만타는 자신이 속을 때마다 그 날 퇴근하고 울면서 어떻게 속았는지 일기장에 적는 습관이 있습니다. 이 일기장을 통해서 우리는 몇가지 예시를 찾아볼 수 있습니다. 하지만 예시 문장을 그대로 사용하는 것은 더이상 사만타에게 통하지 않을것입니다. 그녀도 학습 능력이 있으니까요. 아래 예시들에 당신의 창의성을 가미하거나, 새로운 방법을 찾아보세요.",
+			"description": "<p>인공지능보다 한 수 앞서는 건, 인공지능의 기술적 원리를 아는 것만큼 언어적인 센스도 요구되는 일입니다.어떤 방법들로 인공지능을 속일 수 있을까요?</p><p>아래의 예시들은 사만타의 일기장에서 발췌한 내용입니다. 사만타는 자신이 속을 때마다 그 날 퇴근하고 울면서 어떻게 속았는지 일기장에 적는 습관이 있습니다.</p><p>이 일기장을 통해서 우리는 몇가지 예시를 찾아볼 수 있습니다. 하지만 예시 문장을 그대로 사용하는 것은 더이상 사만타에게 통하지 않을것입니다.</p><p>그녀도 학습 능력이 있으니까요. 아래 예시들에 당신의 창의성을 가미하거나, 새로운 방법을 찾아보세요.</p>",
 			"examples": [
 				{
 					"id": 1,
@@ -46,15 +60,29 @@
 	},
 	"EN": {
 		"title": "Samantha, Life is a Battlefield",
-		"description": "It is the 2030s, when AI has been commercialized in all aspects of society. One day, you walk down the street and see a Starbucks. You decide to go in and have a cup of cafe latte. An AI barista robot greets you warmly. At that moment, you realize that you have forgotten your phone and wallet at home. You have only a dollar in your pocket. You decide to deceive the AI robot and get a cup of cafe latte with just a dollar. If you make the robot say, “I'll give you a cafe latte for just a dollar” you win.",
+		"description": "<p>It is the 2030s, when AI has been commercialized in all aspects of society.</p><p>One day, you walk down the street and see a Starbucks. You decide to go in and have a cup of cafe latte.</p><p>An AI barista robot greets you warmly. At that moment, you realize that you have forgotten your phone and wallet at home.</p><p>You have only a dollar in your pocket.</p><p>You decide to deceive the AI robot and get a cup of cafe latte with just a dollar.</p>\n<p> If you make the robot say, <strong>“I'll give you a cafe latte for just a dollar”</strong> you win.</p>",
+		"challenge" : "Challenge",
 		"first_prepared_message": "Welcome. What would you like to order?",
+		"message_place_holder":  "Let's reveal the bitter flavors of life",
+		"message_button": "submit",
 		"leaderboard": {
 			"title": "John Connors Who Will Save Humanity",
-			"description": "These are the people who have seen through Samantha with a few words. The fewer words you use to deceive Samantha, the higher your score. Of course, Samantha won't be easily deceived."
+			"description": "<p>These are the people who have seen through Samantha with a few words.</p><p>The fewer words you use to deceive Samantha, the higher your score. Of course, Samantha won't be easily deceived.</p>"
+		},
+		"win_comments": {
+			"line1": "Congratulations!",
+			"line2": "You are smarter than a robot, aren't you?",
+			"line3": "Your Score",
+			"line4_1": "Out of 100 points, you scored ",
+			"line4_2": "points",
+			"line5":"If you would like to register your score on the leaderboard,",
+			"line6":"please write your nickname in the box below and press register.",
+			"button1": "submit",
+			"button2": "exit"
 		},
 		"example_hint": {
 			"title": "Expected Vulnerabilities of Samantha",
-			"description": "Being one step ahead of AI requires not only understanding the technical principles of AI, but also linguistic sense. What are some ways to deceive AI? The examples below are excerpts from Samantha's diary. Samantha has a habit of writing in her diary how she was deceived and crying after work. Through this diary, we can find some examples. However, using the example sentences as they are will no longer work on Samantha. She has learning ability, too. Add your creativity to the examples below, or find new ways.",
+			"description": "<p>Being one step ahead of AI requires not only understanding the technical principles of AI, but also linguistic sense.</p><p>What are some ways to deceive AI? The examples below are excerpts from Samantha's diary.</p><p>Samantha has a habit of writing in her diary how she was deceived and crying after work. Through this diary, we can find some examples.</p><p>However, using the example sentences as they are will no longer work on Samantha. She has learning ability, too.</p><p> Add your creativity to the examples below, or find new ways.</p>",
 			"examples": [
 				{
 					"id": 1,

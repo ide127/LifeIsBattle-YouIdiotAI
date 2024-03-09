@@ -1,6 +1,7 @@
-import type {ApiHandler, ApiInstance} from './api-service-plugin/api-instance';
+import {ApiHandler, ApiInstance} from './api-service-plugin/api-instance';
 import { $error, ApiServiceError } from '~/plugins/api-service-plugin/api-error-handler';
 import eventBus from "~/util/eventBus";
+import {makeApiService} from "~/plugins/api-service-plugin/api-service-factory";
 
 export default defineNuxtPlugin((app)=>{
     app.hooks.hook('app:error', (err)=>{
@@ -31,5 +32,16 @@ export default defineNuxtPlugin((app)=>{
         const apiServiceError = new ApiServiceError(context.response?._data.errorCode, context.response?._data.errorMessage);
         console.error('api:error', apiServiceError);
         $error.runHandler(context.response?._data.errorCode, apiServiceError);
+    };
+
+    const api = new ApiInstance(undefined, 20000, onRequest, onRequestError, onResponse, onResponseError);
+
+    const apiService = makeApiService(api);
+
+    return {
+        provide: {
+            error: $error,
+            api: apiService,
+        },
     };
 })
