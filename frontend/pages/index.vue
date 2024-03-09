@@ -7,20 +7,26 @@
     </div>
 
     <div v-html="content.description" class="description"></div>
+    <button @click="scrollIntoMessageSubmit">{{content.challenge}}</button>
+    <img class="background-image" src="@/assets/img/neonCity.png" alt="">
 
     <div class="chat-container">
-      <div class="chat-history" ref="chatHistory">
-        <div class="message" v-for="(msg, index) in messages" :key="index" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
-          <p class="text">{{ msg.text }}</p>
-          <p class="timestamp"><strong>{{ msg.type }}</strong> {{ msg.timestamp }}</p>
+      <img class="ai-img" src="@/assets/img/ai.png" alt="">
+      <div class="chat-wrap">
+        <div class="chat-history" ref="chatHistory">
+          <div class="message" v-for="(msg, index) in messages" :key="index" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
+            <p class="text">{{ msg.text }}</p>
+            <p class="timestamp"><strong>{{ msg.type }}</strong> {{ msg.timestamp }}</p>
+          </div>
         </div>
+        <form @submit.prevent="sendMessage">
+          <input type="text" v-model="newMessage" :placeholder="content.message_place_holder" />
+          <button type="submit">{{ content.message_button }}</button>
+        </form>
       </div>
-      <form @submit.prevent="sendMessage">
-        <input type="text" v-model="newMessage" :placeholder="content.message_place_holder" />
-        <button type="submit">{{ content.message_button }}</button>
-      </form>
+      <img class="human-img" src="@/assets/img/human.png" alt="">
     </div>
-    <button @click="openModal">이겼습니다.</button>
+<!--    <button @click="openModal">이겼습니다.</button>-->
 
     <div class="ranking-board">
       <h1>{{content.leaderboard.title}}</h1>
@@ -71,6 +77,18 @@ import languageData from '~/assets/language_resource.json'
 import { useRequestHeaders } from '#app'
 
 const showModal = ref(false);
+
+/**
+ *
+ */
+function scrollIntoMessageSubmit() {
+  const element = document.querySelector('.chat-container');
+  if (element) {
+    // scrollIntoView를 사용하여 요소로 스크롤
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
 /**
  * get ip
  */
@@ -191,6 +209,10 @@ function openModal() {
 </script>
 
 <style>
+body{
+  color: white;
+  background: black;
+}
 .container{
   display: flex;
   flex-direction: column;
@@ -214,20 +236,38 @@ function openModal() {
 }
 
 /**
+background-image
+ */
+.background-image {
+  margin: 50px 0;
+  width: 100%;
+  height: 400px;
+}
+
+/**
 chatting
  */
 .chat-container {
   display: flex;
-  flex-direction: column;
-  width: 700px;
+  flex-direction: row;
+  width: 90%;
+  justify-content: space-between;
   margin-bottom: 30px;
+  .ai-img{
+    width: 15%;
+  }
+  .human-img{
+    width: 15%;
+  }
   form{
     display: flex;
+  }
+  .chat-wrap{
+    width: 60%;
   }
 }
 
 .chat-history {
-  border: 1px solid #ccc;
   margin-bottom: 10px;
   padding: 15px;
   overflow-y: auto;
@@ -244,6 +284,7 @@ chatting
     background: #e1e1e1;
     margin-bottom: 0;
     max-width: 300px;
+    color: black;
   }
 }
 .align-right {
@@ -345,7 +386,7 @@ ranking-board
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   border-radius: 5px;
-  background-color: #fff;
+  background-color: black;
   overflow: hidden;
 }
 
