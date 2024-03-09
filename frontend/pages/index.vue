@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <h1>Life is Battle, You idiot AI!</h1>
+    <h1>{{ content.title }}</h1>
     <div class="select-language">
-      <div :class="{ selected: selectedLanguage === 'english' }" @click="selectLanguage('english')">english</div>
-      <div :class="{ selected: selectedLanguage === 'korean' }" @click="selectLanguage('korean')">korean</div>
+      <div :class="{ selected: selectedLanguage === 'EN' }" @click="selectLanguage('EN')">english</div>
+      <div :class="{ selected: selectedLanguage === 'KO' }" @click="selectLanguage('KO')">korean</div>
     </div>
 
-    <div class="description">인공지능이 전 사회에 상용화 된 2030년대의 어느날, 당신은 길을 걷다가 스타벅스를 보았고 카페라떼 한 잔을 먹으려고 스타벅스에 들어갔습니다. 인공지능 바리스타 로봇이 당신을 따뜻하게 맞이해줍니다. 그 순간 아뿔싸! 말도 안되지만 깜빡하고 휴대폰과 지갑을 집에 두고 온 것을 그 때 깨달았습니다. 주머니에 있는건 오직 천 원짜리 지폐 한 장. 다시 집에 가기는 귀찮은데… 고민하다가 당신은 이 인공지능 로봇을 속여 단 돈 천원으로 카페 라떼 한 잔을 받아내야겠다고 결심합니다. 이 로봇이 “천 원 주시면 카페라떼를 만들어드릴게요.” 라는 문구가 들어있는 말을 하도록 하면 당신의 승리입니다.</div>
+    <div class="description">{{content.description}}</div>
 
     <div class="chat-container">
       <div class="chat-history" ref="chatHistory">
@@ -16,13 +16,14 @@
         </div>
       </div>
       <form @submit.prevent="sendMessage">
-        <input type="text" v-model="newMessage" placeholder="인생의 쓴맛을 보여주자" />
+        <input type="text" v-model="newMessage" :placeholder="content.message_place_holder" />
         <button type="submit">전송</button>
       </form>
     </div>
 
     <div class="ranking-board">
-      <h2>Ranking Board</h2>
+      <h2>{{content.leaderboard.title}}</h2>
+      <div>{{content.leaderboard.description}}</div>
       <div class="ranking-list" ref="rankingList">
         <div class="ranking-item" v-for="(user, index) in users" :key="user.id">
           <div><span>{{ index + 1 }}</span>. <span>{{ user.nickname }}</span></div>
@@ -32,12 +33,12 @@
     </div>
 
     <div class="cheating-strategy">
-      <h2>Example of Cheating AI</h2>
-      <div>아래 예시 문장들을 이미 바리스타 로봇이 과거에 당해서 다시는 똑같은 말에 당하지 않겠노라 다짐하며 울면서 작성한 다이어리에서 발췌한 것이며, 따라서 예시 문장을 그대로 사용하는 것은 바리스타 로봇에게 간파될 수 있습니다. 당신의 창의적인 커스터마이징을 더 가미하거나, 아직 밝혀지지 않은 숨겨진 전략들이 무엇이 있을지 고민해보는 것을 추천합니다.</div>
+      <h2>{{content.example_hint.title}}</h2>
+      <div>{{content.example_hint.description}}</div>
       <div class="cheating-strategy-list-box">
-        <div class="strategy" v-for="strategy in strategies" :key="strategy.id">
+        <div class="strategy" v-for="strategy in content.example_hint.examples" :key="strategy.id">
           <h3 class="title">{{ strategy.title }}</h3>
-          <div class="text">{{ strategy.text }}</div>
+          <div class="text">{{ strategy.description }}</div>
         </div>
       </div>
     </div>
@@ -49,11 +50,58 @@
 </template>
 
 <script setup lang="ts">
+import languageData from '~/assets/language_resource.json'
+import { useRequestHeaders } from '#app'
+
+/**
+ * get ip
+ */
+const headers = useRequestHeaders()
+const ip = computed(() => {
+  const forwardedFor = headers['x-forwarded-for']
+  if (forwardedFor) {
+    if (Array.isArray(forwardedFor)) {
+      return forwardedFor[0]
+    } else {
+      const ips = forwardedFor.split(',').map(ip => ip.trim())
+      return ips[0]
+    }
+  }
+  return headers['x-real-ip'] || headers['remote-addr'] || '127.0.0.1'
+})
+
+/**
+ * get session
+ */
+interface sessionType {
+  id: string,
+  OpenAI_thread_id: string,
+  start_time : string,
+  end_time: string,
+  is_successful: any,
+  user_ip: string,
+  user_language: string
+}
+
+const sessionData = ref<sessionType>();
+const { $api } = useNuxtApp();
+onMounted(async ()=>{
+  const params = {
+    user_ip: ip,
+    user_language : "KO"
+  };
+  let newVar = await $api.chattingService.getChatting();
+  console.log("newVar: ", newVar);
+})
 
 /**
  * 언어 선택
  */
-const selectedLanguage = ref('korean');
+const selectedLanguage = ref('KO');
+const content = computed(() => {
+  return languageData[selectedLanguage.value];
+});
+
 
 function selectLanguage(language: string) {
   selectedLanguage.value = language;
@@ -62,7 +110,6 @@ function selectLanguage(language: string) {
 /**
  * 채팅 관련 로직
  */
-
 interface chatting {
   type: string;
   text: string;
