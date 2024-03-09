@@ -11,20 +11,27 @@
     <img class="background-image" src="@/assets/img/neonCity.png" alt="">
 
     <div class="chat-container">
-      <img class="ai-img" src="@/assets/img/ai.png" alt="">
+      <div class="ai-img">
+        <img src="@/assets/img/ai.png" alt="">
+      </div>
       <div class="chat-wrap">
         <div class="chat-history" ref="chatHistory">
-          <div class="message" v-for="(msg, index) in messages" :key="index" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
-            <p class="text">{{ msg.text }}</p>
-            <p class="timestamp"><strong>{{ msg.type }}</strong> {{ msg.timestamp }}</p>
-          </div>
+            <!-- message는 한 줄을 차지하지만, message-wrap은 글씨의 크기에 딱 맞게 설정하기 위함임 -->
+            <div class="message" v-for="(msg, index) in messages" :key="index" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
+              <div class="message-wrap" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
+                <p class="text">{{ msg.text }}</p>
+                <p class="timestamp"><strong>{{ msg.type }}</strong> {{ msg.timestamp }}</p>
+              </div>
+            </div>
         </div>
         <form @submit.prevent="sendMessage">
           <input type="text" v-model="newMessage" :placeholder="content.message_place_holder" />
           <button type="submit">{{ content.message_button }}</button>
         </form>
       </div>
-      <img class="human-img" src="@/assets/img/human.png" alt="">
+      <div class="human-img">
+        <img src="@/assets/img/human.png" alt="">
+      </div>
     </div>
 <!--    <button @click="openModal">이겼습니다.</button>-->
 
@@ -250,14 +257,24 @@ chatting
 .chat-container {
   display: flex;
   flex-direction: row;
-  width: 90%;
+  width: 100%;
   justify-content: space-between;
   margin-bottom: 30px;
   .ai-img{
     width: 15%;
+    display: flex;
+    align-items: center;
+    img{
+      height: 320px;
+    }
   }
   .human-img{
     width: 15%;
+    display: flex;
+    align-items: center;
+    img{
+      height: 320px;
+    }
   }
   form{
     display: flex;
@@ -275,30 +292,36 @@ chatting
 }
 
 .message {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-  .text{
-    padding: 5px 10px;
-    border-radius: 10px;
-    background: #e1e1e1;
-    margin-bottom: 0;
-    max-width: 300px;
-    color: black;
+  .message-wrap{
+    display: inline-block;
+    max-width: 60%; /* 말풍선의 최대 너비 */
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 20px; /* 말풍선 모양을 만듭니다 */
+    background-color: #e1e1e1;
+    color: black; /* 텍스트 색상 */
+    .text{
+      margin: 0;
+      word-wrap: break-word; /* 긴 텍스트가 있을 경우 줄바꿈 */
+    }
   }
 }
+
 .align-right {
-  align-items: flex-end; /* 오른쪽 정렬 */
+  align-items: flex-end !important; /* 오른쪽 정렬 */
   text-align: right;
+  border-bottom-right-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
 }
 
 .align-left {
-  align-items: flex-start; /* 왼쪽 정렬 */
+  align-items: flex-start !important; /* 왼쪽 정렬 */
   text-align: left;
+  border-bottom-left-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
 }
 .timestamp {
   font-size: 0.8em;
   color: #666;
+  margin-bottom: 0;
 }
 
 input[type="text"] {
