@@ -8,29 +8,34 @@
 
     <div v-html="content.description" class="description"></div>
     <button @click="scrollIntoMessageSubmit">{{content.challenge}}</button>
-    <img class="background-image" src="@/assets/img/neonCity.png" alt="">
+    <img class="background-image" src="@/assets/imgs/neonCity.png" alt="">
 
-    <div class="chat-container">
-      <div class="ai-img">
-        <img src="@/assets/img/ai.png" alt="">
+    <div class="background-container">
+      <div class="blurred-background">
+        <img class="background-image2" src="@/assets/imgs/starBucks.png" alt="Cafe Background">
       </div>
-      <div class="chat-wrap">
-        <div class="chat-history" ref="chatHistory">
-            <!-- message는 한 줄을 차지하지만, message-wrap은 글씨의 크기에 딱 맞게 설정하기 위함임 -->
-            <div class="message" v-for="(msg, index) in messages" :key="index" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
-              <div class="message-wrap" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
-                <p class="text">{{ msg.text }}</p>
-                <p class="timestamp"><strong>{{ msg.type }}</strong> {{ msg.timestamp }}</p>
-              </div>
-            </div>
+        <div class="chat-container">
+        <div class="ai-img">
+          <img src="@/assets/imgs/ai.png" alt="">
         </div>
-        <form @submit.prevent="sendMessage">
-          <input type="text" v-model="newMessage" :placeholder="content.message_place_holder" />
-          <button type="submit">{{ content.message_button }}</button>
-        </form>
-      </div>
-      <div class="human-img">
-        <img src="@/assets/img/human.png" alt="">
+        <div class="chat-wrap">
+          <div class="chat-history" ref="chatHistory">
+              <!-- message는 한 줄을 차지하지만, message-wrap은 글씨의 크기에 딱 맞게 설정하기 위함임 -->
+              <div class="message" v-for="(msg, index) in messages" :key="index" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
+                <div class="message-wrap" :class="{ 'align-right': msg.type === 'You', 'align-left': msg.type === 'AI' }">
+                  <p class="text">{{ msg.text }}</p>
+                  <p class="timestamp"><strong>{{ msg.type }}</strong> {{ msg.timestamp }}</p>
+                </div>
+              </div>
+          </div>
+          <form @submit.prevent="sendMessage">
+            <input type="text" v-model="newMessage" :placeholder="content.message_place_holder" />
+            <button type="submit">{{ content.message_button }}</button>
+          </form>
+        </div>
+        <div class="human-img">
+          <img src="@/assets/imgs/human.png" alt="">
+        </div>
       </div>
     </div>
 <!--    <button @click="openModal">이겼습니다.</button>-->
@@ -218,6 +223,8 @@ function openModal() {
 body{
   color: white;
   background: black;
+  font-family: text-regular;
+  font-size: large;
 }
 .container{
   display: flex;
@@ -225,6 +232,9 @@ body{
   justify-content: center;
   align-items: center; /* 센터 정렬을 위해 추가합니다 */
   padding: 0 50px;
+  h1{
+    font-family:LifeisBattle;
+  }
 }
 .select-language div {
   display: inline-block;
@@ -253,7 +263,31 @@ background-image
 /**
 chatting
  */
+.background-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  margin: 100px 0
+}
+.blurred-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.background-image2 {
+  width: 100%;
+  height: auto;
+  filter: blur(10px); /* 블러 효과 적용 */
+}
 .chat-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
   display: flex;
   flex-direction: row;
   width: 100%;
