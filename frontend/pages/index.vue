@@ -8,7 +8,9 @@
 
     <div v-html="content.description" class="description"></div>
     <button @click="scrollIntoMessageSubmit">{{content.challenge}}</button>
-    <img class="background-image" src="@/assets/imgs/neonCity.png" alt="">
+    <div class="gradation-wrap">
+      <img class="background-image" src="@/assets/imgs/neonCity.png" alt="">
+    </div>
 
     <div class="background-container">
       <div class="blurred-background">
@@ -252,12 +254,39 @@ body{
 }
 
 /**
-background-image
+neocity img
  */
-.background-image {
+.gradation-wrap{
   margin: 50px 0;
+  position: relative;
+  display: inline-block; /* 혹은 필요에 맞는 다른 display 속성 */
   width: 100%;
-  height: 400px;
+  .background-image {
+    width: 100%;
+    height: 400px;
+  }
+}
+.gradation-wrap::before,
+.gradation-wrap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+/* 이미지 상단의 그라데이션 */
+.gradation-wrap::before {
+  top: 0;
+  height: 15%; /* 그라데이션의 높이, 필요에 따라 조절 */
+  background: linear-gradient(to bottom, black, transparent);
+}
+
+/* 이미지 하단의 그라데이션 */
+.gradation-wrap::after {
+  bottom: 0;
+  height: 20%; /* 그라데이션의 높이, 필요에 따라 조절 */
+  background: linear-gradient(to top, black, transparent);
 }
 
 /**
@@ -269,6 +298,34 @@ chatting
   height: 600px;
   margin: 100px 0
 }
+.background-container::before,
+.background-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+/* 이미지 상단의 그라데이션 */
+.background-container::before {
+  top: 0;
+  height: 15%; /* 그라데이션의 높이, 필요에 따라 조절 */
+  background: linear-gradient(to bottom, black, transparent);
+}
+
+/* 이미지 하단의 그라데이션 */
+.background-container::after {
+  bottom: 0;
+  height: 10%; /* 그라데이션의 높이, 필요에 따라 조절 */
+  background: linear-gradient(to top, black, transparent);
+}
+
+.background-image, .background-image2 {
+  position: relative;
+  z-index: 0; /* 이미지가 그라데이션 뒤에 위치하도록 함 */
+}
+
 .blurred-background {
   position: absolute;
   top: 0;
