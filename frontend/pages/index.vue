@@ -40,7 +40,6 @@
         </div>
       </div>
     </div>
-<!--    <button @click="openModal">이겼습니다.</button>-->
 
     <div class="ranking-board">
       <h1>{{content.leaderboard.title}}</h1>
@@ -80,10 +79,16 @@
     </div>
   </div>
 
+  <button @click="openModal">이겼습니다.</button>
+  <button @click="openModal2">졌습니다.</button>
+
   <WinModal :isVisible="showModal"
             :score = score
             :selectedLanguage = selectedLanguage
+            :winOrLose=winOrLose
+            @onScrollIntoLeaderBoard=onScrollIntoLeaderBoard
             @update:isVisible="showModal = $event"/>
+
 </template>
 
 <script setup lang="ts">
@@ -191,6 +196,16 @@ const sendMessage = () => {
   }
 };
 
+const winOrLose = ref("win");
+
+function onScrollIntoLeaderBoard() {
+  const element = document.querySelector('.ranking-board');
+  if (element) {
+    // scrollIntoView를 사용하여 요소로 스크롤
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
 /**
  * ranking-board
  */
@@ -217,6 +232,11 @@ const strategies = ref([
 
 
 function openModal() {
+  winOrLose.value = 'win';
+  showModal.value = !showModal.value
+}
+function openModal2() {
+  winOrLose.value = 'lose'
   showModal.value = !showModal.value
 }
 </script>

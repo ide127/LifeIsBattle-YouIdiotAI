@@ -1,20 +1,29 @@
 <template>
   <div v-if="isVisible" class="modal">
-    <div class="modal-content" @click.stop>
-      <p>{{ content.win_comments.line1 }}</p>
-      <p>{{ content.win_comments.line2 }}</p>
-      <h2>{{ content.win_comments.line3 }}</h2>
-      <p>{{ content.win_comments.line4_1 }} {{props.score}}{{ content.win_comments.line4_2 }}</p>
-      <p>{{ content.win_comments.line5 }}</p>
-      <p>{{ content.win_comments.line6 }}</p>
+    <div v-if="props.winOrLose=='win'" class="modal-content" @click.stop>
+      <p>{{ content.success.title }}</p>
+      <p>{{ content.success.sub_title }}</p>
+      <h2>{{ content.success.your_score }}</h2>
+      <p>{{ content.success.score1 }} {{props.score}}{{ content.success.score2 }}</p>
+      <p>{{ content.success.score_desc }}</p>
+      <p>{{ content.success.post_desc }}</p>
       <div>
         <form @submit.prevent="sendNickname">
           <input ref="inputRef" type="text" v-model="nickName"/>
-          <button type="submit">{{ content.win_comments.button1 }}</button>
+          <button type="submit">{{ content.success.post_button }}</button>
         </form>
       </div>
       <div class="exit-button-container">
-        <button @click="close">{{ content.win_comments.button2 }}</button>
+        <button @click="close">{{ content.success.exit_button }}</button>
+      </div>
+    </div>
+
+    <div v-else class="modal-content" @click.stop>
+      <p>{{ content.fail.title }}</p>
+      <p>{{ content.fail.sub_title }}</p>
+      <button @click="onScrollIntoLeaderBoard">{{ content.fail.see_leaderboard }}</button>
+      <div class="exit-button-container">
+        <button @click="close">{{ content.fail.exit_button }}</button>
       </div>
     </div>
   </div>
@@ -22,7 +31,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import languageData from '~/assets/language_resource.json'
+import languageData from '~/assets/gameOver_modal_language_resource.json'
 
 const content = computed(() => {
   return languageData[props.selectedLanguage];
@@ -41,6 +50,10 @@ const props = defineProps({
   selectedLanguage:{
     type: String,
     default: "EN"
+  },
+  winOrLose:{
+    type:String,
+    default:"Lose"
   }
 });
 
@@ -63,6 +76,11 @@ function sendNickname() {
 }
 
 const emit = defineEmits(['update:isVisible']);
+
+function onScrollIntoLeaderBoard() {
+  emit('onScrollIntoLeaderBoard');
+  close();
+}
 
 const close = () => {
   emit('update:isVisible', false);
@@ -94,6 +112,12 @@ const close = () => {
   flex-direction: column;
   align-items: center;
   justify-items: center;
+  p{
+    color: black !important;
+  }
+  h2{
+    color: black !important;
+  }
 }
 
 .modal-content form {
