@@ -41,7 +41,7 @@ hostname = socket.gethostname()
 localhost_ip = socket.gethostbyname(hostname)
 
 # Add localhost IP address to ALLOWED_HOSTS
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '34.72.148.215', localhost_ip]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '34.72.148.215', localhost_ip, 'lifeisbattle.com']
 
 # Application definition
 
