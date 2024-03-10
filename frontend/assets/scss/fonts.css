@@ -1,0 +1,32 @@
+/* assets/scss/fonts.scss */
+@font-face {
+    font-family: 'LifeIsbattle';
+    src: url('../../public/fonts/LifeIsbattle.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'text-bold';
+    src: url('../../public/fonts/Gaegu-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'text-regular';
+    src: url('../../public/fonts/Gaegu-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'text-light';
+    src: url('../../public/fonts/Gaegu-light.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    font-display: swap;
+}
