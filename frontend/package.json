@@ -7,7 +7,7 @@
 		"dev": "./node_modules/.bin/nuxt dev",
 		"generate": "./node_modules/.bin/nuxt generate",
 		"preview": "./node_modules/.bin/nuxt preview",
-		"postinstall": "./node_modules/.bin/nuxt prepare",
+		"postinstall": ".\\node_modules\\.bin\\nuxt.cmd prepare",
 		"build:windows": ".\\node_modules\\.bin\\nuxt.cmd build",
 		"dev:windows": ".\\node_modules\\.bin\\nuxt.cmd dev",
 		"generate:windows": ".\\node_modules\\.bin\\nuxt.cmd generate",
@@ -24,6 +24,7 @@
 		"vue-router": "^4.3.0"
 	},
 	"devDependencies": {
-		"@types/lodash-es": "^4.17.12"
+		"@types/lodash-es": "^4.17.12",
+		"sass": "^1.71.1"
 	}
 }

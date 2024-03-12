@@ -1,22 +1,38 @@
-import { ApiServiceBase } from '~/plugins/api-service-plugin/service/ApiServiceBase';
-import { ApiInstance } from '~/plugins/api-service-plugin/api-instance';
+import { ApiServiceBase } from "~/plugins/api-service-plugin/service/ApiServiceBase";
+import { ApiInstance } from "~/plugins/api-service-plugin/api-instance";
 
 export class ChattingService extends ApiServiceBase {
-    constructor(instance: ApiInstance) {
-        super(instance);
-    }
+	constructor(instance: ApiInstance) {
+		super(instance);
+	}
 
-    /**
-     * session 생성
-     */
-    createSession(params: any) {
-        return this.post<any>('/sessions/', params);
-    }
+	/**
+	 * create session
+	 */
+	createSession(params: any) {
+		return this.post<any>("/sessions/", params);
+	}
 
-    /**
-     * chatting get
-     */
-    getChatting() {
-        return this.get<any>('/leaderboard');
-    }
+	patchSession(params: any) {
+		return this.patch<any>("/sessions/", params);
+	}
+
+	// create message
+	createMessage(params: any) {
+		return this.post<any>("/messages/", params);
+	}
+
+	// create leaderboard
+	createLeaderboard(params: any) {
+		return this.post<any>("/leaderboard/", params);
+	}
+
+	// get leaderboard_list
+	getLeaderboardList(params: any) {
+		return this.get<any>("/leaderboard/", params);
+	}
+
+	getScore(params: any) {
+		return this.post<any>("/calc_score/", params);
+	}
 }
