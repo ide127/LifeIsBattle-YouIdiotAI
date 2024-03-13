@@ -15,7 +15,6 @@
 				korean
 			</div>
 		</div>
-
 		<div v-html="content.description" class="description"></div>
 		<button @click="scrollIntoMessageSubmit">
 			{{ content.challenge }}
@@ -301,7 +300,6 @@ function onScrollIntoLeaderBoard() {
 		element.scrollIntoView({ behavior: "smooth", block: "center" });
 	}
 }
-
 /**
  * ranking-board
  */
@@ -359,7 +357,7 @@ body {
 }
 
 /**
-background-image
+neocity img
  */
 .gradation-wrap {
 	margin: 50px 0;
