@@ -84,10 +84,22 @@ export class ApiServiceBase {
 		params?: SearchParameters,
 		options?: ApiOptions
 	) {
+		api = api + (params?.id ? `${params.id}/` : "");
 		const fetchOptions = this._instance.getOptions(
 			"patch",
 			params ?? {},
 			options
+		);
+		// debug api, params, options, fetchOptions
+		alert(
+			"api: " +
+				api +
+				" params: " +
+				JSON.stringify(params) +
+				" options: " +
+				JSON.stringify(options) +
+				" fetchOptions: " +
+				JSON.stringify(fetchOptions)
 		);
 		return $fetch<T>(
 			`https://lifeisbattle.com/server/api/game${api}`,
