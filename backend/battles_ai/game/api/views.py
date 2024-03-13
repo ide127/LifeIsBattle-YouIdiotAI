@@ -87,6 +87,13 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
             "messages": messages_serializer.data
         })
     
+    def patch(self, request, *args, **kwargs):
+        session = self.get_object()
+        session.end_time = request.data.get('end_time')
+        session.is_successful = request.data.get('is_successful')
+        session.save()
+        return Response(status=status.HTTP_200_OK)
+    
 
     
 class MessageViewSet(viewsets.ModelViewSet):
