@@ -88,23 +88,24 @@ MIDDLEWARE = [
 
 # For production, set the following to False
 CORS_ORIGIN_ALLOW_ALL = True 
+CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost',
-    'http://127.0.0.1',
-    'http://lifeisbattle.com',
-    'https://lifeisbattle.com',
-    '127.0.0.1'
-]
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    'http://localhost',
-    'http://127.0.0.1',
-    'http://lifeisbattle.com',
-    'https://lifeisbattle.com',
-    '127.0.0.1'
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://localhost',
+#     'http://127.0.0.1',
+#     'http://lifeisbattle.com',
+#     'https://lifeisbattle.com:3000',
+#     '127.0.0.1'
+# ]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3000',
+#     'http://localhost',
+#     'http://127.0.0.1',
+#     'http://lifeisbattle.com',
+#     'https://lifeisbattle.com',
+#     '127.0.0.1'
+# ]
 
 ROOT_URLCONF = 'battles_ai.urls'
 
