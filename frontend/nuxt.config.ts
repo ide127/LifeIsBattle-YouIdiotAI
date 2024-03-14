@@ -8,9 +8,3 @@ export default defineNuxtConfig({
 		},
 	},
 });
-
-export default {
-	router: {
-		mode: "history",
-	},
-};
