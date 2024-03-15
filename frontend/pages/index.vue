@@ -83,62 +83,41 @@
 			</div>
 		</div>
 
-		<div class="ranking-board">
-			<h1>{{ content.leaderboard.title }}</h1>
-			<div
-				class="leaderboard-description"
-				v-html="content.leaderboard.description"
-			></div>
-			<div class="table-container">
-				<div class="language-filters">
-					<label>
-						<input
-							type="checkbox"
-							v-model="filterLanguages"
-							value="EN"
-							checked
-						/>
-						English
-					</label>
-					<label>
-						<input
-							type="checkbox"
-							v-model="filterLanguages"
-							value="KO"
-							checked
-						/>
-						Korean
-					</label>
-				</div>
-				<div>
-					<table>
-						<caption>
-							Description of the table
-						</caption>
-						<thead>
-							<tr>
-								<th>Rank</th>
-								<th>Nickname</th>
-								<th>Language</th>
-								<th>Score</th>
-							</tr>
-						</thead>
-						<div class="table-wrapper" @scroll="handleScroll">
-							<tbody>
-								<tr v-for="(user, index) in visibleUsers">
-									<td>
-										{{ index + 1 }}
-									</td>
-									<td>{{ user.nickname }}</td>
-									<td>{{ user.lang }}</td>
-									<td>{{ user.score }}</td>
-								</tr>
-							</tbody>
-						</div>
-					</table>
-				</div>
-			</div>
-		</div>
+    <div class="ranking-board">
+      <h1>{{ content.leaderboard.title }}</h1>
+      <div class="leaderboard-description" v-html="content.leaderboard.description"></div>
+      <div class="language-filters">
+        <label>
+          <input type="checkbox" v-model="filterLanguages" value="EN" checked />
+          English
+        </label>
+        <label>
+          <input type="checkbox" v-model="filterLanguages" value="KO" checked />
+          Korean
+        </label>
+      </div>
+      <caption>Description of the table</caption>
+      <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Nickname</th>
+        <th>Language</th>
+        <th>Score</th>
+      </tr>
+      </thead>
+      <div class="table-container" @scroll="handleScroll">
+        <table>
+          <tbody>
+          <tr v-for="(user, index) in visibleUsers">
+            <td>{{ index + 1 }}</td>
+            <td>{{ user.nickname }}</td>
+            <td>{{ user.lang }}</td>
+            <td>{{ user.score }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 		<div class="cheating-strategy">
 			<h2>{{ content.example_hint.title }}</h2>
 			<div v-html="content.example_hint.description"></div>
@@ -155,8 +134,8 @@
 		</div>
 	</div>
 
-	<button @click="openModal">이겼습니다.</button>
-	<button @click="openModal2">졌습니다.</button>
+	<button @click="openWinModal">이겼습니다.</button>
+	<button @click="openLoseModal">졌습니다.</button>
 
 	<WinModal
 		:isVisible="showModal"
@@ -308,10 +287,12 @@ async function sendMessage() {
 
 function proceedResult(result: boolean, currentSession: ref<Session | null>) {
 	if (result) {
-		alert("You win!");
+    openWinModal();
+		// alert("You win!");
 		currentSession.value.is_successful = true;
 	} else {
-		alert("You lose!");
+    openLoseModal();
+		// alert("You lose!");
 		currentSession.value.is_successful = false;
 	}
 	currentSession.value.end_time = dateInstance.toLocaleTimeString();
@@ -362,27 +343,36 @@ function generateDummyData(count: number) {
 	return users;
 }
 
-const visibleUsers = computed(() => {
+const visibleUsers: { nickname:string, lang: number, score: number }[] = computed(() => {
 	return users.value
-		.filter((user) => filterLanguages.value.includes(user.lang))
+		.filter((user: any) => filterLanguages.value.includes(user.lang))
 		.sort((a, b) => b.score - a.score);
 });
 
 const handleScroll = (event: Event) => {
-	const tableWrapper = event.target;
-	const scrollHeight = tableWrapper.scrollHeight - tableWrapper.clientHeight;
-	const scrollTop = tableWrapper.scrollTop;
+	const tableContainer = event.target;
+	const scrollHeight = tableContainer.scrollHeight - tableContainer.clientHeight;
+	const scrollTop = tableContainer.scrollTop;
 
-	if (scrollHeight - scrollTop < 200) {
+  // 스크롤 최상위에서 잠시 멈추도록함 -> 상위 스크롤까지 영향 가지 않도록 함.
+  if (scrollTop == 0) {
+    let elementsByClassNameElement = document.getElementsByClassName("table-container")[0] as HTMLElement;
+    elementsByClassNameElement.style.overflow = "fix";
+    setTimeout(()=>{
+      elementsByClassNameElement.style.overflow = "auto";
+    },200)
+  }
+
+	if (scrollHeight - scrollTop < 20) {
 		users.value.push(...generateDummyData(5));
 	}
 };
 
-function openModal() {
+function openWinModal() {
 	winOrLose.value = "win";
 	showModal.value = !showModal.value;
 }
-function openModal2() {
+function openLoseModal() {
 	winOrLose.value = "lose";
 	showModal.value = !showModal.value;
 }
@@ -611,12 +601,13 @@ ranking-board
 		padding-bottom: 20px;
 	}
 	.table-container {
+    max-height: 300px;
 		width: 100%;
-		overflow-x: auto;
+		overflow: auto;
 	}
 
 	table {
-		width: 100%;
+		width: 97% !important;
 		border-collapse: collapse;
 		table-layout: fixed; /* This will allow fixed table layouts */
 	}
@@ -656,11 +647,6 @@ ranking-board
 		width: 10%;
 		text-align: center;
 	}
-}
-
-.table-wrapper {
-	max-height: 300px;
-	overflow-y: scroll;
 }
 
 /** cheating strategy */
