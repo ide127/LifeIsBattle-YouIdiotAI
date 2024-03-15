@@ -66,7 +66,7 @@
 							</div>
 						</div>
 					</div>
-					<form @submit.prevent="sendMessage">
+					<form @submit.prevent="sendMessage" v-if="winOrLoseBoolean != true && winOrLoseBoolean != false">
 						<input
 							type="text"
 							v-model="newMessage"
@@ -82,6 +82,10 @@
 				</div>
 			</div>
 		</div>
+    <div class="winOrLoseContainer">
+      <a v-if="winOrLoseBoolean === true" @click.prevent="openWinModal" class="win-message">축하합니다! 내 점수 보러가기</a>
+      <a v-else-if="winOrLoseBoolean === false" @click.prevent="openLoseModal">실패했어요. 다시 해볼래요."</a>
+    </div>
 
     <div class="ranking-board">
       <h1>{{ content.leaderboard.title }}</h1>
@@ -165,7 +169,7 @@ const time = ref();
 
 const dateInstance = new Date();
 
-let currentSession = ref<Session | null>(null);
+const currentSession = ref<Session | null>(null);
 
 interface Session {
 	id: string;
@@ -173,7 +177,7 @@ interface Session {
 	OpenAI_thread_id: string;
 	start_time: string;
 	end_time: string;
-	is_successful: any;
+	is_successful: boolean | null;
 	user_ip: string;
 	user_language: string;
 }
@@ -285,14 +289,14 @@ async function sendMessage() {
 	}
 }
 
+const winOrLoseBoolean = ref(null);
+
 function proceedResult(result: boolean, currentSession: ref<Session | null>) {
 	if (result) {
-    openWinModal();
-		// alert("You win!");
+    winOrLoseBoolean.value = true;
 		currentSession.value.is_successful = true;
 	} else {
-    openLoseModal();
-		// alert("You lose!");
+    winOrLoseBoolean.value = false;
 		currentSession.value.is_successful = false;
 	}
 	currentSession.value.end_time = dateInstance.toLocaleTimeString();
@@ -453,7 +457,10 @@ chatting
 	position: relative;
 	width: 100%;
 	height: 600px;
-	margin: 100px 0;
+  margin-top : 100px;
+}
+.winOrLoseContainer{
+  margin-bottom: 100px;
 }
 .background-container::before,
 .background-container::after {
@@ -552,6 +559,9 @@ chatting
 			margin: 0;
 			word-wrap: break-word; /* 긴 텍스트가 있을 경우 줄바꿈 */
 		}
+    .win-message{
+      color: blue;
+    }
 	}
 }
 
