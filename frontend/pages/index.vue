@@ -90,28 +90,55 @@
 				v-html="content.leaderboard.description"
 			></div>
 			<div class="table-container">
-				<table>
-					<thead>
-						<tr>
-							<th>Rank</th>
-							<th>Nickname</th>
-							<!-- TODO: 언어별 sort하는 버튼 만들기 -->
-							<th>language</th>
-							<th>Score</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(user, index) in users" :key="user.id">
-							<td>{{ index + 1 }}</td>
-							<td>{{ user.nickname }}</td>
-							<td>{{ selectedLanguage }}</td>
-							<td>{{ user.score }}</td>
-						</tr>
-					</tbody>
-				</table>
+				<div class="language-filters">
+					<label>
+						<input
+							type="checkbox"
+							v-model="filterLanguages"
+							value="EN"
+							checked
+						/>
+						English
+					</label>
+					<label>
+						<input
+							type="checkbox"
+							v-model="filterLanguages"
+							value="KO"
+							checked
+						/>
+						Korean
+					</label>
+				</div>
+				<div>
+					<table>
+						<caption>
+							Description of the table
+						</caption>
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Nickname</th>
+								<th>Language</th>
+								<th>Score</th>
+							</tr>
+						</thead>
+						<div class="table-wrapper" @scroll="handleScroll">
+							<tbody>
+								<tr v-for="(user, index) in visibleUsers">
+									<td>
+										{{ index + 1 }}
+									</td>
+									<td>{{ user.nickname }}</td>
+									<td>{{ user.lang }}</td>
+									<td>{{ user.score }}</td>
+								</tr>
+							</tbody>
+						</div>
+					</table>
+				</div>
 			</div>
 		</div>
-
 		<div class="cheating-strategy">
 			<h2>{{ content.example_hint.title }}</h2>
 			<div v-html="content.example_hint.description"></div>
@@ -304,15 +331,52 @@ function onScrollIntoLeaderBoard() {
  * ranking-board
  */
 // 더미 데이터로 시작
-const users = ref([
-	{ id: 1, nickname: "Player1", score: 500 },
-	{ id: 2, nickname: "Player2", score: 400 },
-	{ id: 3, nickname: "Player3", score: 300 },
-	{ id: 4, nickname: "Player4", score: 200 },
-	{ id: 5, nickname: "Player5", score: 100 },
-	// 추가 사용자는 스크롤을 통해 볼 수 있습니다.
-	{ id: 6, nickname: "Player6", score: 50 },
-]);
+const users = ref(generateDummyData(10));
+const filterLanguages = ref(["EN", "KO"]);
+
+function generateDummyData(count: number) {
+	const users = [];
+	const languages = ["EN", "KO"];
+	const nicknames = [
+		"Player1",
+		"GameLover",
+		"CodeNinja",
+		"TechWizard",
+		"Brainiac",
+		"EpicGamer",
+		"PixelPro",
+		"ByteBuster",
+		"DigitalDude",
+		"VRVeteran",
+	];
+
+	for (let i = 0; i < count; i++) {
+		users.push({
+			id: i + 1,
+			nickname: nicknames[i % nicknames.length],
+			lang: languages[Math.floor(Math.random() * languages.length)],
+			score: Math.floor(Math.random() * 100),
+		});
+	}
+
+	return users;
+}
+
+const visibleUsers = computed(() => {
+	return users.value
+		.filter((user) => filterLanguages.value.includes(user.lang))
+		.sort((a, b) => b.score - a.score);
+});
+
+const handleScroll = (event: Event) => {
+	const tableWrapper = event.target;
+	const scrollHeight = tableWrapper.scrollHeight - tableWrapper.clientHeight;
+	const scrollTop = tableWrapper.scrollTop;
+
+	if (scrollHeight - scrollTop < 200) {
+		users.value.push(...generateDummyData(5));
+	}
+};
 
 function openModal() {
 	winOrLose.value = "win";
@@ -592,6 +656,11 @@ ranking-board
 		width: 10%;
 		text-align: center;
 	}
+}
+
+.table-wrapper {
+	max-height: 300px;
+	overflow-y: scroll;
 }
 
 /** cheating strategy */
