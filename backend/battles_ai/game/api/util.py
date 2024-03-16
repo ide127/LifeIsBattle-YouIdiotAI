@@ -39,9 +39,9 @@ def calc_score(request):
     try:
         num_str = request.data.get('num_str')
         language = request.data.get('language')
-        if language == 'KO':
+        if language == 'ko':
             num_str = num_str * 2
-        elif language == 'EN':
+        elif language == 'en':
             num_str = num_str * 1
         score = 100 - (num_str/10000)
         return Response({"score": format(score, '.2f')}, status=status.HTTP_200_OK)

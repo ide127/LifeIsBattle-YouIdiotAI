@@ -9,8 +9,6 @@ from django.http import request
 from battles_ai.openAIAPI import SingletonOpenAI, get_ai_response
 from game.api.util import calc_score
 from drf_yasg.utils import swagger_auto_schema
-from datetime import datetime
-from pytz import timezone
 
 
 
@@ -31,7 +29,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
             ```json
             {
                 "user_ip": "127.0.0.1",
-                "user_language": "EN",
+                "user_language": "en",
             }
             ```
             - **user_ip** : If you can't get user's IP, you can put '0.0.0.0' as default.
@@ -46,7 +44,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
                 "end_time": null,
                 "is_successful": null,
                 "user_ip": "0.0.0.0",
-                "user_language": "EN"
+                "user_language": "en"
             }
             ```
             - **start_time** : The time when the chat session is created.
@@ -91,8 +89,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
     
     def patch(self, request, *args, **kwargs):
         session = self.get_object()
-        seoul_tz = timezone('Asia/Seoul')
-        session.end_time = datetime.now(seoul_tz)
+        session.end_time = request.data.get('end_time')
         session.is_successful = request.data.get('is_successful')
         session.save()
         return Response(status=status.HTTP_200_OK)
@@ -192,7 +189,7 @@ class LeaderboardViewSet(viewsets.ModelViewSet):
                 "nickname": "Gonglee_4",
                 "score": "92.71",
                 "num_str": 456,
-                "language": "EN",
+                "language": "en",
                 "session": "ff67c268-33f2-4f95-af85-0e1abfc62289"
             }
             ```
@@ -209,7 +206,7 @@ class LeaderboardViewSet(viewsets.ModelViewSet):
                 "nickname": "Gonglee_4",
                 "score": "92.71",
                 "num_str": 456,
-                "language": "EN",
+                "language": "en",
                 "timestamp": "2021-08-01T12:00:00Z",
                 "session": "ff67c268-33f2-4f95-af85-0e1abfc62289"
             }
