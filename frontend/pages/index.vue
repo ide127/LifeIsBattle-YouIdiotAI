@@ -130,9 +130,6 @@
 					Korean
 				</label>
 			</div>
-			<caption>
-				Description of the table
-			</caption>
 			<thead>
 				<tr>
 					<th class="rank">Rank</th>
