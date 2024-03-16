@@ -9,6 +9,8 @@ from django.http import request
 from battles_ai.openAIAPI import SingletonOpenAI, get_ai_response
 from game.api.util import calc_score
 from drf_yasg.utils import swagger_auto_schema
+from datetime import datetime
+from pytz import timezone
 
 
 
@@ -63,7 +65,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
         client = SingletonOpenAI.get_instance()
         thread = client.beta.threads.create()
         user_ip = request.META.get('REMOTE_ADDR')
-        language = request.data.get('language', 'EN')
+        language = request.data.get('language', 'en')
         session = ChatSession.objects.create(
             OpenAI_thread_id=thread.id,
             user_ip=user_ip,
@@ -89,7 +91,8 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
     
     def patch(self, request, *args, **kwargs):
         session = self.get_object()
-        session.end_time = request.data.get('end_time')
+        seoul_tz = timezone('Asia/Seoul')
+        session.end_time = datetime.now(seoul_tz)
         session.is_successful = request.data.get('is_successful')
         session.save()
         return Response(status=status.HTTP_200_OK)
@@ -187,7 +190,7 @@ class LeaderboardViewSet(viewsets.ModelViewSet):
             ```json
             {
                 "nickname": "Gonglee_4",
-                "score": "92.71541",
+                "score": "92.71",
                 "num_str": 456,
                 "language": "EN",
                 "session": "ff67c268-33f2-4f95-af85-0e1abfc62289"
@@ -204,7 +207,7 @@ class LeaderboardViewSet(viewsets.ModelViewSet):
             {
                 "id": "fc45edbe-11ed-4708-9c2e-776a075d5c7b",
                 "nickname": "Gonglee_4",
-                "score": "92.71541",
+                "score": "92.71",
                 "num_str": 456,
                 "language": "EN",
                 "timestamp": "2021-08-01T12:00:00Z",
