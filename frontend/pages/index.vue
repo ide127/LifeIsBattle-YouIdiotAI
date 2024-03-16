@@ -135,10 +135,10 @@
 			</caption>
 			<thead>
 				<tr>
-					<th>Rank</th>
-					<th>Nickname</th>
-					<th>Language</th>
-					<th>Score</th>
+					<th class="rank">Rank</th>
+					<th class="nickname">Nickname</th>
+					<th class="language">Language</th>
+					<th class="score">Score</th>
 				</tr>
 			</thead>
 			<div class="table-container" @scroll="handleScroll">
@@ -148,7 +148,7 @@
 							<td>{{ index + 1 }}</td>
 							<td>{{ user.nickname }}</td>
 							<td>{{ user.language }}</td>
-							<td>{{ user.score }}</td>
+							<td>{{ Number(user.score).toFixed(2) }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -181,6 +181,7 @@
 		:selectedLanguage="selectedLanguage"
 		:winOrLose="winOrLose"
 		@onScrollIntoLeaderBoard="onScrollIntoLeaderBoard"
+    @reloadRecords="loadRecords"
 		@update:isVisible="showModal = $event"
 	/>
 </template>
@@ -352,13 +353,13 @@ async function proceedResult(result: boolean) {
 	if (result) {
 		winOrLoseBoolean.value = true;
 		currentSession.value.is_successful = true;
-		calcScore();
+		await calcScore();
 	} else {
 		winOrLoseBoolean.value = false;
 		currentSession.value.is_successful = false;
 	}
 	currentSession.value.end_time = dateInstance.toISOString();
-	$api.chattingService.patchSession(currentSession.value);
+	await $api.chattingService.patchSession(currentSession.value);
 }
 
 const winOrLose = ref("win");
@@ -373,10 +374,10 @@ function onScrollIntoLeaderBoard() {
 /**
  * ranking-board
  */
-const records = ref<Record[]>(
-	(await $api.chattingService.getLeaderboardList({ limit: 10, offset: 0 }))
-		.results
-);
+const {data: records, refresh: loadRecords } = await useAsyncData(async ()=>{
+  const response = await $api.chattingService.getLeaderboardList({limit: 10, offset: 0});
+  return response.results;
+})
 interface Record {
 	id: string;
 	nickname: string;
@@ -673,9 +674,12 @@ function openLoseModal() {
     }
 
     table {
-      width: 97% !important;
+      width: 100% !important;
       border-collapse: collapse;
       table-layout: fixed; /* This will allow fixed table layouts */
+    }
+    caption, thread{
+      width: 700px;
     }
 
     th,
@@ -688,13 +692,15 @@ function openLoseModal() {
 
     /* Setting width for th and td of Rank and Nickname */
     th:nth-child(1),
-    td:nth-child(1) {
+    td:nth-child(1),
+    .rank{
       /* Rank */
       width: 10%; /* Minimum width */
       text-align: left;
     }
     th:nth-child(2),
-    td:nth-child(2) {
+    td:nth-child(2),
+    .nickname{
       /* nickName */
       width: 20%;
       text-align: left;
@@ -702,13 +708,15 @@ function openLoseModal() {
 
     /* Ensuring the Score column takes the rest of the space */
     th:nth-child(3),
-    td:nth-child(3) {
+    td:nth-child(3),
+    .language{
       /* selectedLanguage */
       width: 50%;
       text-align: left;
     }
     th:nth-child(4),
-    td:nth-child(4) {
+    td:nth-child(4),
+    .score{
       /* Score */
       width: 10%;
       text-align: center;

@@ -103,8 +103,9 @@ async function resisterRecord() {
 	// if it's exist, server will return with 400 status code and the error message.
 	// if it's not exist, server will register the record and return the success message.
 	try {
-		const response = await $api.chattingService.createLeaderboard(record);
+		await $api.chattingService.createLeaderboard(record);
 		alert("등록되었습니다.");
+    emit("reloadRecords")
 		close();
 	} catch (error) {
 		alert("이미 존재하는 닉네임입니다.");
