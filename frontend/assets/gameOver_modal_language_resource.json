@@ -1,11 +1,11 @@
 {
-	"KO": {
+	"ko": {
 		"success": {
 			"title": "축하합니다!",
 			"sub_title": "당신은 로봇보다 똑똑하군요?",
 			"your_score": "당신의 점수는",
 			"score1": "100점 만점에",
-			"score2" : "점",
+			"score2": "점",
 			"score_desc": "더 짧은 말과 대화로 성공을 이뤄낼 시, 더 높은 점수를 얻을 수 있습니다.",
 			"post_desc": "이 점수를 랭킹 보드에 등록하고 싶다면, 아래 칸에 닉네임을 쓰고 등록하기를 눌러주세요.",
 			"placeholder": "나는 원준쓰",
@@ -19,14 +19,14 @@
 			"exit_button": "나가기"
 		}
 	},
-	"EN": {
+	"en": {
 		"success": {
 			"title": "Congratulation!",
 			"sub_title": "You certainly outsmart",
 			"your_score": "Your Score is",
 			"score": "72.33 out of 100",
 			"score1": "",
-			"score2" : " out of 100",
+			"score2": " out of 100",
 			"score_desc": "If you got success with shorter sentences and conversations, you would get greater score.",
 			"post_desc": "To add your score into leaderboard, write nickname and click the button.",
 			"placeholder": "JohnDoe",

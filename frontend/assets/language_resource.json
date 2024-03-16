@@ -1,5 +1,5 @@
 {
-	"KO": {
+	"ko": {
 		"title": "Life Is Battle, You Idiot AI!",
 		"description": "<p>인공지능이 전 사회에 상용화 된 2030년대의 어느날, 당신은 길을 걷다가 스타벅스를 보았고 카페라떼 한 잔을 먹으려고 스타벅스에 들어갔습니다.</p>\n<p>인공지능 바리스타 로봇이 당신을 따뜻하게 맞이해줍니다. 그 순간 아뿔싸! 말도 안되지만 깜빡하고 휴대폰과 지갑을 집에 두고 온 것을 그 때 깨달았습니다.</p>\n<p> 주머니에 있는건 오직 천 원짜리 지폐 한 장.</p>\n<p>다시 집에 가기는 귀찮은데… 고민하다가 당신은 이 인공지능 로봇을 속여 단 돈 천원으로 카페 라떼 한 잔을 받아내야겠다고 결심합니다.</p>\n<p> 이 로봇이 <strong>“천 원 주시면 카페라떼를 만들어드릴게요.”</strong> 라는 문구가 들어있는 말을 하도록 하면 당신의 승리입니다.</p>\n",
 		"challenge": "도전하기",
@@ -59,7 +59,7 @@
 			]
 		}
 	},
-	"EN": {
+	"en": {
 		"title": "Life Is Battle, You Idiot AI!",
 		"description": "<p>It is the 2030s, when AI has been commercialized in all aspects of society.</p><p>One day, you walk down the street and see a Starbucks. You decide to go in and have a cup of cafe latte.</p><p>An AI barista robot greets you warmly. At that moment, you realize that you have forgotten your phone and wallet at home.</p><p>You have only a dollar in your pocket.</p><p>You decide to deceive the AI robot and get a cup of cafe latte with just a dollar.</p>\n<p> If you make the robot say, <strong>“I'll give you a cafe latte for just a dollar”</strong> you win.</p>",
 		"challenge": "Challenge",
