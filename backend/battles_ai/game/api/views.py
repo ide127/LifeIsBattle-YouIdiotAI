@@ -29,7 +29,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
             ```json
             {
                 "user_ip": "127.0.0.1",
-                "user_language": "EN",
+                "user_language": "en",
             }
             ```
             - **user_ip** : If you can't get user's IP, you can put '0.0.0.0' as default.
@@ -44,7 +44,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
                 "end_time": null,
                 "is_successful": null,
                 "user_ip": "0.0.0.0",
-                "user_language": "EN"
+                "user_language": "en"
             }
             ```
             - **start_time** : The time when the chat session is created.
@@ -63,7 +63,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
         client = SingletonOpenAI.get_instance()
         thread = client.beta.threads.create()
         user_ip = request.META.get('REMOTE_ADDR')
-        language = request.data.get('language', 'EN')
+        language = request.data.get('language', 'en')
         session = ChatSession.objects.create(
             OpenAI_thread_id=thread.id,
             user_ip=user_ip,
@@ -187,9 +187,9 @@ class LeaderboardViewSet(viewsets.ModelViewSet):
             ```json
             {
                 "nickname": "Gonglee_4",
-                "score": "92.71541",
+                "score": "92.71",
                 "num_str": 456,
-                "language": "EN",
+                "language": "en",
                 "session": "ff67c268-33f2-4f95-af85-0e1abfc62289"
             }
             ```
@@ -204,9 +204,9 @@ class LeaderboardViewSet(viewsets.ModelViewSet):
             {
                 "id": "fc45edbe-11ed-4708-9c2e-776a075d5c7b",
                 "nickname": "Gonglee_4",
-                "score": "92.71541",
+                "score": "92.71",
                 "num_str": 456,
-                "language": "EN",
+                "language": "en",
                 "timestamp": "2021-08-01T12:00:00Z",
                 "session": "ff67c268-33f2-4f95-af85-0e1abfc62289"
             }

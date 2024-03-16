@@ -3,14 +3,14 @@
 		<h1 class="index-title">{{ content.title }}</h1>
 		<div class="select-language">
 			<div
-				:class="{ selected: selectedLanguage === 'EN' }"
-				@click="selectLanguage('EN')"
+				:class="{ selected: selectedLanguage === 'en' }"
+				@click="selectLanguage('en')"
 			>
 				english
 			</div>
 			<div
-				:class="{ selected: selectedLanguage === 'KO' }"
-				@click="selectLanguage('KO')"
+				:class="{ selected: selectedLanguage === 'ko' }"
+				@click="selectLanguage('ko')"
 			>
 				korean
 			</div>
@@ -61,12 +61,20 @@
 								<p class="text">{{ msg.text }}</p>
 								<p class="timestamp">
 									<strong>{{ msg.type }}</strong>
-									{{ msg.timestamp }}
+									{{
+										new Date(msg.timestamp).toLocaleString()
+									}}
 								</p>
 							</div>
 						</div>
 					</div>
-					<form @submit.prevent="sendMessage" v-if="winOrLoseBoolean != true && winOrLoseBoolean != false">
+					<form
+						@submit.prevent="sendMessage"
+						v-if="
+							winOrLoseBoolean != true &&
+							winOrLoseBoolean != false
+						"
+					>
 						<input
 							type="text"
 							v-model="newMessage"
@@ -82,46 +90,70 @@
 				</div>
 			</div>
 		</div>
-    <div class="winOrLoseContainer">
-      <a v-if="winOrLoseBoolean === true" @click.prevent="openWinModal" class="win-message">축하합니다! 내 점수 보러가기</a>
-      <a v-else-if="winOrLoseBoolean === false" @click.prevent="openLoseModal">실패했어요. 다시 해볼래요."</a>
-    </div>
+		<div class="winOrLoseContainer">
+			<a
+				v-if="winOrLoseBoolean === true"
+				@click.prevent="openWinModal"
+				class="win-message"
+				>축하합니다! 내 점수 보러가기</a
+			>
+			<a
+				v-else-if="winOrLoseBoolean === false"
+				@click.prevent="openLoseModal"
+				>실패했어요. 다시 해볼래요."</a
+			>
+		</div>
 
-    <div class="ranking-board">
-      <h1>{{ content.leaderboard.title }}</h1>
-      <div class="leaderboard-description" v-html="content.leaderboard.description"></div>
-      <div class="language-filters">
-        <label>
-          <input type="checkbox" v-model="filterLanguages" value="EN" checked />
-          English
-        </label>
-        <label>
-          <input type="checkbox" v-model="filterLanguages" value="KO" checked />
-          Korean
-        </label>
-      </div>
-      <caption>Description of the table</caption>
-      <thead>
-      <tr>
-        <th>Rank</th>
-        <th>Nickname</th>
-        <th>Language</th>
-        <th>Score</th>
-      </tr>
-      </thead>
-      <div class="table-container" @scroll="handleScroll">
-        <table>
-          <tbody>
-          <tr v-for="(user, index) in visibleUsers">
-            <td>{{ index + 1 }}</td>
-            <td>{{ user.nickname }}</td>
-            <td>{{ user.lang }}</td>
-            <td>{{ user.score }}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+		<div class="ranking-board">
+			<h1>{{ content.leaderboard.title }}</h1>
+			<div
+				class="leaderboard-description"
+				v-html="content.leaderboard.description"
+			></div>
+			<div class="language-filters">
+				<label>
+					<input
+						type="checkbox"
+						v-model="filterLanguages"
+						value="en"
+						checked
+					/>
+					English
+				</label>
+				<label>
+					<input
+						type="checkbox"
+						v-model="filterLanguages"
+						value="en"
+						checked
+					/>
+					Korean
+				</label>
+			</div>
+			<caption>
+				Description of the table
+			</caption>
+			<thead>
+				<tr>
+					<th>Rank</th>
+					<th>Nickname</th>
+					<th>Language</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<div class="table-container" @scroll="handleScroll">
+				<table>
+					<tbody>
+						<tr v-for="(user, index) in visibleUsers">
+							<td>{{ index + 1 }}</td>
+							<td>{{ user.nickname }}</td>
+							<td>{{ user.language }}</td>
+							<td>{{ user.score }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 		<div class="cheating-strategy">
 			<h2>{{ content.example_hint.title }}</h2>
 			<div v-html="content.example_hint.description" class="cheating-strategy-description"></div>
@@ -137,13 +169,15 @@
 			</div>
 		</div>
 	</div>
-
+	<!--
 	<button @click="openWinModal">이겼습니다.</button>
-	<button @click="openLoseModal">졌습니다.</button>
+	<button @click="openLoseModal">졌습니다.</button> -->
 
 	<WinModal
 		:isVisible="showModal"
 		:score="score"
+		:session="currentSession"
+		:characterNumber="characterNumber"
 		:selectedLanguage="selectedLanguage"
 		:winOrLose="winOrLose"
 		@onScrollIntoLeaderBoard="onScrollIntoLeaderBoard"
@@ -154,12 +188,11 @@
 <script setup lang="ts">
 import languageData from "~/assets/language_resource.json";
 import { useRequestHeaders } from "#app";
+import { get } from "lodash-es";
 
 const { $api } = useNuxtApp();
 
 const showModal = ref(false);
-
-const score = ref(0);
 
 const messages = ref<Message[]>([]);
 const newMessage = ref("");
@@ -194,13 +227,18 @@ interface Message {
 /**
  * 언어 선택
  */
-const selectedLanguage = ref("EN");
+const selectedLanguage = ref("en");
 const content = computed(() => {
 	return languageData[selectedLanguage.value as keyof typeof languageData];
 });
 
 function selectLanguage(language: string) {
 	selectedLanguage.value = language;
+}
+
+function formatDate(timestamp: string, language: string) {
+	const date = new Date(timestamp);
+	return date.toLocaleString(language);
 }
 
 /**
@@ -246,9 +284,10 @@ async function sendMessage() {
 			currentSession.value = await $api.chattingService.createSession({
 				id: null,
 				OpenAI_thread_id: null,
-				start_time: dateInstance.toLocaleTimeString(),
+				start_time: dateInstance.toISOString(),
 				end_time: null,
 				is_successful: null,
+				score: null,
 				user_ip: ip.value,
 				user_language: selectedLanguage.value,
 			});
@@ -262,7 +301,7 @@ async function sendMessage() {
 			type: "You",
 			is_user: true,
 			text: newMessage.value,
-			timestamp: dateInstance.toLocaleTimeString(),
+			timestamp: dateInstance.toISOString(),
 			session: currentSession.value.id,
 		};
 		newMessage.value = "";
@@ -282,24 +321,43 @@ async function sendMessage() {
 		// check the target sentence is in the new answer message
 		// if messages length is over 20, it's fail.
 		if (answer_message.text.includes(content.value.victory_sentence)) {
-			proceedResult(true, currentSession);
+			proceedResult(true);
 		} else if (messages.value.length >= 20) {
-			proceedResult(false, currentSession);
+			proceedResult(false);
 		}
 	}
 }
 
-const winOrLoseBoolean = ref(null);
+const winOrLoseBoolean = ref<null | boolean>(null);
 
-function proceedResult(result: boolean, currentSession: ref<Session | null>) {
+const characterNumber = ref(0);
+const score = ref(0);
+
+async function calcScore(): Promise<void> {
+	characterNumber.value = messages.value.reduce((acc, cur) => {
+		return acc + cur.text.length;
+	}, 0);
+	const response = await $api.chattingService.getScore({
+		num_str: characterNumber.value,
+		language: selectedLanguage.value,
+	});
+	score.value = response.score;
+}
+
+async function proceedResult(result: boolean) {
+	// check the current session is null or not
+	if (!currentSession.value) {
+		throw new Error("Session is not created yet");
+	}
 	if (result) {
-    winOrLoseBoolean.value = true;
+		winOrLoseBoolean.value = true;
 		currentSession.value.is_successful = true;
+		calcScore();
 	} else {
-    winOrLoseBoolean.value = false;
+		winOrLoseBoolean.value = false;
 		currentSession.value.is_successful = false;
 	}
-	currentSession.value.end_time = dateInstance.toLocaleTimeString();
+	currentSession.value.end_time = dateInstance.toISOString();
 	$api.chattingService.patchSession(currentSession.value);
 }
 
@@ -315,60 +373,57 @@ function onScrollIntoLeaderBoard() {
 /**
  * ranking-board
  */
-// 더미 데이터로 시작
-const users = ref(generateDummyData(10));
-const filterLanguages = ref(["EN", "KO"]);
-
-function generateDummyData(count: number) {
-	const users = [];
-	const languages = ["EN", "KO"];
-	const nicknames = [
-		"Player1",
-		"GameLover",
-		"CodeNinja",
-		"TechWizard",
-		"Brainiac",
-		"EpicGamer",
-		"PixelPro",
-		"ByteBuster",
-		"DigitalDude",
-		"VRVeteran",
-	];
-
-	for (let i = 0; i < count; i++) {
-		users.push({
-			id: i + 1,
-			nickname: nicknames[i % nicknames.length],
-			lang: languages[Math.floor(Math.random() * languages.length)],
-			score: Math.floor(Math.random() * 100),
-		});
-	}
-
-	return users;
+const records = ref<Record[]>(
+	(await $api.chattingService.getLeaderboardList({ limit: 10, offset: 0 }))
+		.results
+);
+interface Record {
+	id: string;
+	nickname: string;
+	score: number;
+	num_str: number;
+	language: string;
+	time: string;
+	session: string;
 }
+const filterLanguages = ref(["en", "ko"]);
 
-const visibleUsers: { nickname:string, lang: number, score: number }[] = computed(() => {
-	return users.value
-		.filter((user: any) => filterLanguages.value.includes(user.lang))
+const visibleUsers = computed(() => {
+	return records.value
+		.filter((record) => filterLanguages.value.includes(record.language))
 		.sort((a, b) => b.score - a.score);
 });
 
-const handleScroll = (event: Event) => {
+const handleScroll = async (event: Event) => {
 	const tableContainer = event.target;
-	const scrollHeight = tableContainer.scrollHeight - tableContainer.clientHeight;
-	const scrollTop = tableContainer.scrollTop;
+	if (tableContainer instanceof HTMLElement) {
+		const scrollHeight =
+			tableContainer.scrollHeight - tableContainer.clientHeight;
+		const scrollTop = tableContainer.scrollTop;
 
-  // 스크롤 최상위에서 잠시 멈추도록함 -> 상위 스크롤까지 영향 가지 않도록 함.
-  if (scrollTop == 0) {
-    let elementsByClassNameElement = document.getElementsByClassName("table-container")[0] as HTMLElement;
-    elementsByClassNameElement.style.overflow = "fix";
-    setTimeout(()=>{
-      elementsByClassNameElement.style.overflow = "auto";
-    },200)
-  }
+		if (scrollTop == 0) {
+			let elementsByClassNameElement = document.getElementsByClassName(
+				"table-container"
+			)[0] as HTMLElement;
+			elementsByClassNameElement.style.overflow = "fix";
+			setTimeout(() => {
+				elementsByClassNameElement.style.overflow = "auto";
+			}, 200);
+		}
 
-	if (scrollHeight - scrollTop < 20) {
-		users.value.push(...generateDummyData(5));
+		if (scrollHeight - scrollTop < 200) {
+			const recordsLength = records.value.length;
+			const params = {
+				limit: 5,
+				offset: recordsLength,
+			};
+			const newRecords = await $api.chattingService.getLeaderboardList(
+				params
+			);
+			records.value.push(...newRecords.results);
+		}
+	} else {
+		throw new Error("tableContainer is not HTMLElement");
 	}
 };
 

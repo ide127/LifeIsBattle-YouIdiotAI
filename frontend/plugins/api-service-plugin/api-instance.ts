@@ -43,12 +43,16 @@ export class ApiInstance {
 		return omitBy(params, (value: any) => isNull(value) || isNaN(value));
 	}
 	private getCsrfToken() {
-		const cookieValue = document.cookie
-			.split("; ")
-			.find((row) => row.startsWith("csrftoken="));
-		return cookieValue ? decodeURIComponent(cookieValue.split("=")[1]) : "";
+		if (typeof document !== "undefined") {
+			const cookieValue = document.cookie
+				.split("; ")
+				.find((row) => row.startsWith("csrftoken="));
+			return cookieValue
+				? decodeURIComponent(cookieValue.split("=")[1])
+				: "";
+		}
+		return "";
 	}
-
 	public getOptions(
 		method: Rest,
 		params?: SearchParameters,

@@ -9,7 +9,7 @@ from drf_yasg.utils import swagger_auto_schema
     operation_description= \
         """
         This endpoint calculates the score based on the number of characters in the input string.
-        The score is calculated as 100 - (num_str/5000).
+        The score is calculated as 100 - (num_str/10000).
         If the language is Korean, the input string is doubled before the score is calculated.
         
         **Request Example**:
@@ -26,7 +26,7 @@ from drf_yasg.utils import swagger_auto_schema
         **Return Example**:
         ```json
         {
-            "score": "48.79087"
+            "score": "78.79"
         }
         ```
         
@@ -39,11 +39,11 @@ def calc_score(request):
     try:
         num_str = request.data.get('num_str')
         language = request.data.get('language')
-        if language == 'KO':
+        if language == 'ko':
             num_str = num_str * 2
-        elif language == 'EN':
+        elif language == 'en':
             num_str = num_str * 1
-        score = 100 - (num_str/5000)
+        score = 100 - (num_str/10000)
         return Response({"score": format(score, '.2f')}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"detail": "Invalid input"}, status=status.HTTP_400_BAD_REQUEST)
