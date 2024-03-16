@@ -131,7 +131,6 @@
 				</label>
 			</div>
 			<caption>
-				Description of the table
 			</caption>
 			<thead>
 				<tr>
@@ -678,7 +677,7 @@ function openLoseModal() {
       border-collapse: collapse;
       table-layout: fixed; /* This will allow fixed table layouts */
     }
-    caption, thread{
+    caption, thead{
       width: 700px;
     }
 
