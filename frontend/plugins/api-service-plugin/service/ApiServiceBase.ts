@@ -17,12 +17,11 @@ export class ApiServiceBase {
 		options?: ApiOptions
 	) {
 		const fetchOptions = this._instance.getOptions("get", params, options);
-		return $fetch<T>(
-			`https://lifeisbattle.com/server/api/game${api}`,
-			fetchOptions
-		).then((response) => {
-			return response;
-		});
+		return $fetch<T>(fetchOptions.baseUrl + api, fetchOptions).then(
+			(response) => {
+				return response;
+			}
+		);
 	}
 
 	protected async post<T>(
@@ -35,12 +34,11 @@ export class ApiServiceBase {
 			params ?? {},
 			options
 		);
-		return $fetch<T>(
-			`https://lifeisbattle.com/server/api/game${api}`,
-			fetchOptions
-		).then((response) => {
-			return response;
-		});
+		return $fetch<T>(fetchOptions.baseUrl + api, fetchOptions).then(
+			(response) => {
+				return response;
+			}
+		);
 	}
 
 	protected async put<T>(
@@ -53,12 +51,11 @@ export class ApiServiceBase {
 			params ?? {},
 			options
 		);
-		return $fetch<T>(
-			`https://lifeisbattle.com/server/api/game${api}`,
-			fetchOptions
-		).then((response) => {
-			return response;
-		});
+		return $fetch<T>(fetchOptions.baseUrl + api, fetchOptions).then(
+			(response) => {
+				return response;
+			}
+		);
 	}
 
 	protected async delete<T>(
@@ -71,12 +68,11 @@ export class ApiServiceBase {
 			params ?? {},
 			options
 		);
-		return $fetch<T>(
-			`https://lifeisbattle.com/server/api/game${api}`,
-			fetchOptions
-		).then((response) => {
-			return response;
-		});
+		return $fetch<T>(fetchOptions.baseUrl + api, fetchOptions).then(
+			(response) => {
+				return response;
+			}
+		);
 	}
 
 	protected async patch<T>(
@@ -101,12 +97,11 @@ export class ApiServiceBase {
 				" fetchOptions: " +
 				JSON.stringify(fetchOptions)
 		);
-		return $fetch<T>(
-			`https://lifeisbattle.com/server/api/game${api}`,
-			fetchOptions
-		).then((response) => {
-			return response;
-		});
+		return $fetch<T>(fetchOptions.baseUrl + api, fetchOptions).then(
+			(response) => {
+				return response;
+			}
+		);
 	}
 
 	protected buildJsonBlob(jsonObj: any) {

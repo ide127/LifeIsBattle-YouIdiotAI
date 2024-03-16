@@ -61,7 +61,9 @@
 								<p class="text">{{ msg.text }}</p>
 								<p class="timestamp">
 									<strong>{{ msg.type }}</strong>
-									{{ msg.timestamp }}
+									{{
+										new Date(msg.timestamp).toLocaleString()
+									}}
 								</p>
 							</div>
 						</div>
@@ -113,7 +115,7 @@
 					<input
 						type="checkbox"
 						v-model="filterLanguages"
-						value="EN"
+						value="en"
 						checked
 					/>
 					English
@@ -122,7 +124,7 @@
 					<input
 						type="checkbox"
 						v-model="filterLanguages"
-						value="KO"
+						value="en"
 						checked
 					/>
 					Korean
@@ -167,13 +169,15 @@
 			</div>
 		</div>
 	</div>
-
+	<!-- 
 	<button @click="openWinModal">이겼습니다.</button>
-	<button @click="openLoseModal">졌습니다.</button>
+	<button @click="openLoseModal">졌습니다.</button> -->
 
 	<WinModal
 		:isVisible="showModal"
 		:score="score"
+		:session="currentSession"
+		:characterNumber="characterNumber"
 		:selectedLanguage="selectedLanguage"
 		:winOrLose="winOrLose"
 		@onScrollIntoLeaderBoard="onScrollIntoLeaderBoard"
@@ -184,6 +188,7 @@
 <script setup lang="ts">
 import languageData from "~/assets/language_resource.json";
 import { useRequestHeaders } from "#app";
+import { get } from "lodash-es";
 
 const { $api } = useNuxtApp();
 
@@ -231,6 +236,11 @@ function selectLanguage(language: string) {
 	selectedLanguage.value = language;
 }
 
+function formatDate(timestamp: string, language: string) {
+	const date = new Date(timestamp);
+	return date.toLocaleString(language);
+}
+
 /**
  * chatting 하는 곳으로 이동하는 버튼
  */
@@ -274,7 +284,7 @@ async function sendMessage() {
 			currentSession.value = await $api.chattingService.createSession({
 				id: null,
 				OpenAI_thread_id: null,
-				start_time: dateInstance.toLocaleTimeString(),
+				start_time: dateInstance.toISOString(),
 				end_time: null,
 				is_successful: null,
 				score: null,
@@ -291,7 +301,7 @@ async function sendMessage() {
 			type: "You",
 			is_user: true,
 			text: newMessage.value,
-			timestamp: dateInstance.toLocaleTimeString(),
+			timestamp: dateInstance.toISOString(),
 			session: currentSession.value.id,
 		};
 		newMessage.value = "";
@@ -323,35 +333,15 @@ const winOrLoseBoolean = ref<null | boolean>(null);
 const characterNumber = ref(0);
 const score = ref(0);
 
-async function getScore(): Promise<void> {
+async function calcScore(): Promise<void> {
 	characterNumber.value = messages.value.reduce((acc, cur) => {
 		return acc + cur.text.length;
 	}, 0);
-	score.value = await $api.chattingService.getScore(characterNumber);
-}
-
-async function resisterRecord(nickname: string) {
-	if (!currentSession.value) {
-		throw new Error("Session is not created yet");
-	}
-	const record = {
-		nickname: nickname,
-		score: score.value,
+	const response = await $api.chattingService.getScore({
 		num_str: characterNumber.value,
 		language: selectedLanguage.value,
-		session: currentSession.value.id,
-		timestamp: dateInstance.toLocaleTimeString(),
-	};
-	// if call POST api to register the record,
-	// server will check that the nickname is already exist or not.
-	// if it's exist, server will return with 400 status code and the error message.
-	// if it's not exist, server will register the record and return the success message.
-	const response = await $api.chattingService.createLeaderboard(record);
-	if (response.status === 201) {
-		alert("You are successfully registered!");
-	} else {
-		alert("The nickname is already registered!");
-	}
+	});
+	score.value = response.score;
 }
 
 async function proceedResult(result: boolean) {
@@ -362,11 +352,12 @@ async function proceedResult(result: boolean) {
 	if (result) {
 		winOrLoseBoolean.value = true;
 		currentSession.value.is_successful = true;
+		calcScore();
 	} else {
 		winOrLoseBoolean.value = false;
 		currentSession.value.is_successful = false;
 	}
-	currentSession.value.end_time = dateInstance.toLocaleTimeString();
+	currentSession.value.end_time = dateInstance.toISOString();
 	$api.chattingService.patchSession(currentSession.value);
 }
 
@@ -382,7 +373,6 @@ function onScrollIntoLeaderBoard() {
 /**
  * ranking-board
  */
-// 더미 데이터로 시작
 const records = ref<Record[]>(
 	(await $api.chattingService.getLeaderboardList({ limit: 10, offset: 0 }))
 		.results
