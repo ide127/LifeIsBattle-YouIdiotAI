@@ -3,14 +3,14 @@
 		<h1>{{ content.title }}</h1>
 		<div class="select-language">
 			<div
-				:class="{ selected: selectedLanguage === 'EN' }"
-				@click="selectLanguage('EN')"
+				:class="{ selected: selectedLanguage === 'en' }"
+				@click="selectLanguage('en')"
 			>
 				english
 			</div>
 			<div
-				:class="{ selected: selectedLanguage === 'KO' }"
-				@click="selectLanguage('KO')"
+				:class="{ selected: selectedLanguage === 'ko' }"
+				@click="selectLanguage('ko')"
 			>
 				korean
 			</div>
@@ -95,7 +95,7 @@
 						<input
 							type="checkbox"
 							v-model="filterLanguages"
-							value="EN"
+							value="en"
 							checked
 						/>
 						English
@@ -104,7 +104,7 @@
 						<input
 							type="checkbox"
 							v-model="filterLanguages"
-							value="KO"
+							value="ko"
 							checked
 						/>
 						Korean
@@ -176,8 +176,6 @@ const { $api } = useNuxtApp();
 
 const showModal = ref(false);
 
-const score = ref(0);
-
 const messages = ref<Message[]>([]);
 const newMessage = ref("");
 const chatHistory = ref<HTMLElement | null>(null);
@@ -211,7 +209,7 @@ interface Message {
 /**
  * 언어 선택
  */
-const selectedLanguage = ref("EN");
+const selectedLanguage = ref("en");
 const content = computed(() => {
 	return languageData[selectedLanguage.value as keyof typeof languageData];
 });
@@ -266,6 +264,7 @@ async function sendMessage() {
 				start_time: dateInstance.toLocaleTimeString(),
 				end_time: null,
 				is_successful: null,
+				score: null,
 				user_ip: ip.value,
 				user_language: selectedLanguage.value,
 			});
@@ -299,14 +298,52 @@ async function sendMessage() {
 		// check the target sentence is in the new answer message
 		// if messages length is over 20, it's fail.
 		if (answer_message.text.includes(content.value.victory_sentence)) {
-			proceedResult(true, currentSession);
+			proceedResult(true);
 		} else if (messages.value.length >= 20) {
-			proceedResult(false, currentSession);
+			proceedResult(false);
 		}
 	}
 }
 
-function proceedResult(result: boolean, currentSession: ref<Session | null>) {
+const characterNumber = ref(0);
+const score = ref(0);
+
+async function getScore(): Promise<void> {
+	characterNumber.value = messages.value.reduce((acc, cur) => {
+		return acc + cur.text.length;
+	}, 0);
+	score.value = await $api.chattingService.getScore(characterNumber);
+}
+
+async function resisterRecord(nickname: string) {
+	if (!currentSession.value) {
+		throw new Error("Session is not created yet");
+	}
+	const record = {
+		nickname: nickname,
+		score: score.value,
+		num_str: characterNumber.value,
+		language: selectedLanguage.value,
+		session: currentSession.value.id,
+		timestamp: dateInstance.toLocaleTimeString(),
+	};
+	// if call POST api to register the record,
+	// server will check that the nickname is already exist or not.
+	// if it's exist, server will return with 400 status code and the error message.
+	// if it's not exist, server will register the record and return the success message.
+	const response = await $api.chattingService.createLeaderboard(record);
+	if (response.status === 201) {
+		alert("You are successfully registered!");
+	} else {
+		alert("The nickname is already registered!");
+	}
+}
+
+async function proceedResult(result: boolean) {
+	// check the current session is null or not
+	if (!currentSession.value) {
+		throw new Error("Session is not created yet");
+	}
 	if (result) {
 		alert("You win!");
 		currentSession.value.is_successful = true;
@@ -331,50 +368,42 @@ function onScrollIntoLeaderBoard() {
  * ranking-board
  */
 // 더미 데이터로 시작
-const users = ref(generateDummyData(10));
-const filterLanguages = ref(["EN", "KO"]);
-
-function generateDummyData(count: number) {
-	const users = [];
-	const languages = ["EN", "KO"];
-	const nicknames = [
-		"Player1",
-		"GameLover",
-		"CodeNinja",
-		"TechWizard",
-		"Brainiac",
-		"EpicGamer",
-		"PixelPro",
-		"ByteBuster",
-		"DigitalDude",
-		"VRVeteran",
-	];
-
-	for (let i = 0; i < count; i++) {
-		users.push({
-			id: i + 1,
-			nickname: nicknames[i % nicknames.length],
-			lang: languages[Math.floor(Math.random() * languages.length)],
-			score: Math.floor(Math.random() * 100),
-		});
-	}
-
-	return users;
+const records = ref<Record[]>(
+	(await $api.chattingService.getLeaderboardList({ limit: 10, offset: 0 }))
+		.results
+);
+interface Record {
+	id: string;
+	nickname: string;
+	score: number;
+	num_str: number;
+	language: string;
+	time: string;
+	session: string;
 }
+const filterLanguages = ref(["en", "ko"]);
 
 const visibleUsers = computed(() => {
-	return users.value
-		.filter((user) => filterLanguages.value.includes(user.lang))
+	return records.value
+		.filter((record) => filterLanguages.value.includes(record.language))
 		.sort((a, b) => b.score - a.score);
 });
 
-const handleScroll = (event: Event) => {
+const handleScroll = async (event: Event) => {
 	const tableWrapper = event.target;
 	const scrollHeight = tableWrapper.scrollHeight - tableWrapper.clientHeight;
 	const scrollTop = tableWrapper.scrollTop;
 
 	if (scrollHeight - scrollTop < 200) {
-		users.value.push(...generateDummyData(5));
+		const recordsLength = records.value.length;
+		const params = {
+			limit: 5,
+			offset: recordsLength,
+		};
+		const newRecords = await $api.chattingService.getLeaderboardList(
+			params
+		);
+		records.value.push(...newRecords.results);
 	}
 };
 
