@@ -130,6 +130,8 @@
 					Korean
 				</label>
 			</div>
+			<caption>
+			</caption>
 			<thead>
 				<tr>
 					<th class="rank">Rank</th>
@@ -675,7 +677,7 @@ function openLoseModal() {
       border-collapse: collapse;
       table-layout: fixed; /* This will allow fixed table layouts */
     }
-    caption, thread{
+    caption, thead{
       width: 700px;
     }
 
