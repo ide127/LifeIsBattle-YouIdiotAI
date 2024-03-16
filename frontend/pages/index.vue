@@ -773,6 +773,7 @@ function openLoseModal() {
     }
 
     .align-right {
+      margin-right: 10px;
       align-items: flex-end !important; /* 오른쪽 정렬 */
       text-align: right;
       border-bottom-right-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
