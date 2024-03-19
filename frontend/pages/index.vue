@@ -1045,8 +1045,8 @@ function openLoseModal() {
 		background-color: black;
 		overflow: hidden;
 	}
-  footer{
-    margin-left: 40px;
+  footer {
+    text-align: center;
   }
 }
 </style>
