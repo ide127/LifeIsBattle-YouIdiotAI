@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<canvas ref="canvasRef"></canvas>
+		<canvas ref="canvasRef" class = "matrix-background"></canvas>
 	</div>
 </template>
 
@@ -67,8 +67,31 @@ export default {
 
 body {
 	background: black;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 canvas {
 	display: block;
+}
+@media (min-width: 768px) {
+  .matrix-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -3;
+    width: 100%;
+    height: 3000px !important;
+  }
+}
+@media (max-width: 767px) {
+  .matrix-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -3;
+    width: 100%;
+    height: 1000px !important;
+  }
 }
 </style>

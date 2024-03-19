@@ -1038,11 +1038,15 @@ function openLoseModal() {
 		width: 90%;
 		flex-direction: column;
 		padding: 10px;
+    margin-left : 10px;
 		border: 1px solid #ccc;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		border-radius: 5px;
 		background-color: black;
 		overflow: hidden;
 	}
+  footer{
+    margin-left: 40px;
+  }
 }
 </style>
