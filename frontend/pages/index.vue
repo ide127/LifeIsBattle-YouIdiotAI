@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<matrix-background></matrix-background>
+		<matrix-background />
 		<h1 class="index-title">{{ content.title }}</h1>
 		<div class="select-language">
 			<div
@@ -115,8 +115,7 @@
 				<label>
 					<input
 						type="checkbox"
-						v-model="filterLanguages"
-						value="en"
+						v-model="filterLanguages.en"
 						checked
 					/>
 					English
@@ -124,8 +123,7 @@
 				<label>
 					<input
 						type="checkbox"
-						v-model="filterLanguages"
-						value="en"
+						v-model="filterLanguages.ko"
 						checked
 					/>
 					Korean
@@ -423,11 +421,11 @@ interface Record {
 	time: string;
 	session: string;
 }
-const filterLanguages = ref(["en", "ko"]);
+const filterLanguages = ref({en : true, ko : true});
 
 const visibleUsers = computed(() => {
 	return records.value
-		.filter((record) => filterLanguages.value.includes(record.language))
+		.filter((record) => filterLanguages.value[record.language])
 		.sort((a, b) => b.score - a.score);
 });
 
