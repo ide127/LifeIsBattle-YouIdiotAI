@@ -96,12 +96,12 @@
 				v-if="winOrLoseBoolean === true"
 				@click.prevent="openWinModal"
 				class="win-message"
-				>축하합니다! 내 점수 보러가기</a
+				>{{ content.win_message }}</a
 			>
 			<a
 				v-else-if="winOrLoseBoolean === false"
 				@click.prevent="openLoseModal"
-				>실패했어요. 다시 해볼래요."</a
+				>{{ content.fail_message }}</a
 			>
 		</div>
 
@@ -171,6 +171,9 @@
 			</div>
 		</div>
 	</div>
+	<footer>
+		<p>Copyright &copy; 2024 김준영 All Rights Reserved.</p>
+	</footer>
 	<!--
 	<button @click="openWinModal">이겼습니다.</button>
 	<button @click="openLoseModal">졌습니다.</button> -->
@@ -473,6 +476,12 @@ function openLoseModal() {
 
 <style>
 @media (min-width: 768px) {
+	footer p {
+		font-family: sans-serif;
+		padding: 40px 0;
+		text-align: center;
+	}
+
 	body {
 		color: white;
 		/* background: black; */
@@ -492,6 +501,15 @@ function openLoseModal() {
 			font-family: LifeisBattle;
 			font-size: 3rem;
 		}
+		h2 {
+			font-size: 2.5rem;
+		}
+	}
+
+	.description {
+		margin-bottom: 30px;
+		text-align: center;
+		font-size: 1.2rem;
 	}
 
 	.matrix-background {
@@ -710,10 +728,11 @@ function openLoseModal() {
 		width: 700px;
 		border: 1px solid #ccc;
 		padding: 20px;
-		margin-bottom: 30px;
+		margin-bottom: 100px;
 		.leaderboard-description {
-			font-size: small;
-			padding-bottom: 20px;
+			font-size: large;
+			margin-bottom: 20px;
+			margin-top: 20px;
 		}
 		.table-container {
 			max-height: 300px;
@@ -776,8 +795,12 @@ function openLoseModal() {
 	.cheating-strategy {
 		margin-bottom: 30px;
 		text-align: center;
+		h2 {
+			margin-bottom: 20px;
+		}
 	}
 	.cheating-strategy-list-box {
+		margin-top: 30px;
 		display: grid;
 		grid-template-columns: repeat(
 			3,
