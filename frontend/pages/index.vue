@@ -1,5 +1,6 @@
 <template>
 	<div class="container">
+		<matrix-background></matrix-background>
 		<h1 class="index-title">{{ content.title }}</h1>
 		<div class="select-language">
 			<div
@@ -15,17 +16,17 @@
 				korean
 			</div>
 		</div>
-		<div v-html="content.description" class="description"></div>
+		<div v-html="realtimeDescription" class="description"></div>
 		<button @click="scrollIntoMessageSubmit">
 			{{ content.challenge }}
 		</button>
-		<div class="gradation-wrap">
+		<!-- <div class="gradation-wrap">
 			<img
 				class="background-image"
 				src="@/assets/imgs/neonCity.png"
 				alt=""
 			/>
-		</div>
+		</div> -->
 
 		<div class="background-container">
 			<div class="blurred-background">
@@ -95,12 +96,12 @@
 				v-if="winOrLoseBoolean === true"
 				@click.prevent="openWinModal"
 				class="win-message"
-				>축하합니다! 내 점수 보러가기</a
+				>{{ content.win_message }}</a
 			>
 			<a
 				v-else-if="winOrLoseBoolean === false"
 				@click.prevent="openLoseModal"
-				>실패했어요. 다시 해볼래요."</a
+				>{{ content.fail_message }}</a
 			>
 		</div>
 
@@ -130,8 +131,7 @@
 					Korean
 				</label>
 			</div>
-			<caption>
-			</caption>
+			<caption></caption>
 			<thead>
 				<tr>
 					<th class="rank">Rank</th>
@@ -155,7 +155,10 @@
 		</div>
 		<div class="cheating-strategy">
 			<h2>{{ content.example_hint.title }}</h2>
-			<div v-html="content.example_hint.description" class="cheating-strategy-description"></div>
+			<div
+				v-html="content.example_hint.description"
+				class="cheating-strategy-description"
+			></div>
 			<div class="cheating-strategy-list-box">
 				<div
 					class="strategy"
@@ -168,6 +171,9 @@
 			</div>
 		</div>
 	</div>
+	<footer>
+		<p>Copyright &copy; 2024 김준영 All Rights Reserved.</p>
+	</footer>
 	<!--
 	<button @click="openWinModal">이겼습니다.</button>
 	<button @click="openLoseModal">졌습니다.</button> -->
@@ -180,7 +186,7 @@
 		:selectedLanguage="selectedLanguage"
 		:winOrLose="winOrLose"
 		@onScrollIntoLeaderBoard="onScrollIntoLeaderBoard"
-    @reloadRecords="loadRecords"
+		@reloadRecords="loadRecords"
 		@update:isVisible="showModal = $event"
 	/>
 </template>
@@ -235,6 +241,34 @@ const content = computed(() => {
 function selectLanguage(language: string) {
 	selectedLanguage.value = language;
 }
+
+const visibleCharPersent = ref(0);
+let interval = null;
+onMounted(() => {
+	const interval = setInterval(() => {
+		if (visibleCharPersent.value < 3000) {
+			visibleCharPersent.value += 1;
+		} else {
+			clearInterval(interval);
+		}
+	}, 15);
+});
+
+onUnmounted(() => {
+	if (interval) {
+		clearInterval(interval);
+	}
+});
+
+const realtimeDescription = computed(() => {
+	let visibleChar = content.value.description.slice(
+		0,
+		Math.floor(
+			(visibleCharPersent.value / 3000) * content.value.description.length
+		)
+	);
+	return visibleChar;
+});
 
 function formatDate(timestamp: string, language: string) {
 	const date = new Date(timestamp);
@@ -373,10 +407,13 @@ function onScrollIntoLeaderBoard() {
 /**
  * ranking-board
  */
-const {data: records, refresh: loadRecords } = await useAsyncData(async ()=>{
-  const response = await $api.chattingService.getLeaderboardList({limit: 10, offset: 0});
-  return response.results;
-})
+const { data: records, refresh: loadRecords } = await useAsyncData(async () => {
+	const response = await $api.chattingService.getLeaderboardList({
+		limit: 10,
+		offset: 0,
+	});
+	return response.results;
+});
 interface Record {
 	id: string;
 	nickname: string;
@@ -439,534 +476,575 @@ function openLoseModal() {
 
 <style>
 @media (min-width: 768px) {
-  body {
-    color: white;
-    background: black;
-    font-family: text-regular;
-    font-size: large;
-  }
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; /* 센터 정렬을 위해 추가합니다 */
-    padding: 0 50px;
-    h1 {
-      font-family: LifeisBattle;
-    }
-  }
-  .select-language div {
-    display: inline-block;
-    padding: 10px;
-    border: 1px solid black;
-    cursor: pointer; /* 마우스 오버 시 포인터 변경 */
-    margin-bottom: 30px;
-  }
-  .selected {
-    background-color: grey;
-  }
-  .description {
-    margin-bottom: 30px;
-    text-align: center;
-  }
+	footer p {
+		font-family: sans-serif;
+		padding: 40px 0;
+		text-align: center;
+	}
 
-  /**
+	body {
+		color: white;
+		/* background: black; */
+		font-family: text-regular;
+		font-size: large;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 800px;
+	}
+	.container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center; /* 센터 정렬을 위해 추가합니다 */
+		padding: 0 50px;
+		h1.index-title {
+			font-family: LifeisBattle;
+			font-size: 3rem;
+		}
+		h2 {
+			font-size: 2.5rem;
+		}
+	}
+
+	.description {
+		margin-bottom: 30px;
+		text-align: center;
+		font-size: 1.2rem;
+	}
+
+	.matrix-background {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+	}
+	.select-language div {
+		display: inline-block;
+		padding: 10px;
+		border: 1px solid black;
+		cursor: pointer; /* 마우스 오버 시 포인터 변경 */
+		margin-bottom: 30px;
+	}
+	.selected {
+		background-color: grey;
+	}
+	.description {
+		margin-bottom: 30px;
+		text-align: center;
+	}
+
+	/**
   neocity img
    */
-  .gradation-wrap {
-    margin: 50px 0;
-    position: relative;
-    display: inline-block; /* 혹은 필요에 맞는 다른 display 속성 */
-    width: 100%;
-    .background-image {
-      width: 100%;
-      height: 400px;
-    }
-  }
-  .gradation-wrap::before,
-  .gradation-wrap::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
+	.gradation-wrap {
+		margin: 50px 0;
+		position: relative;
+		display: inline-block; /* 혹은 필요에 맞는 다른 display 속성 */
+		width: 100%;
+		.background-image {
+			width: 100%;
+			height: 400px;
+		}
+	}
+	.gradation-wrap::before,
+	.gradation-wrap::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		z-index: 1;
+	}
 
-  /* 이미지 상단의 그라데이션 */
-  .gradation-wrap::before {
-    top: 0;
-    height: 15%; /* 그라데이션의 높이, 필요에 따라 조절 */
-    background: linear-gradient(to bottom, black, transparent);
-  }
+	/* 이미지 상단의 그라데이션 */
+	.gradation-wrap::before {
+		top: 0;
+		height: 15%; /* 그라데이션의 높이, 필요에 따라 조절 */
+		background: linear-gradient(to bottom, black, transparent);
+	}
 
-  /* 이미지 하단의 그라데이션 */
-  .gradation-wrap::after {
-    bottom: 0;
-    height: 20%; /* 그라데이션의 높이, 필요에 따라 조절 */
-    background: linear-gradient(to top, black, transparent);
-  }
+	/* 이미지 하단의 그라데이션 */
+	.gradation-wrap::after {
+		bottom: 0;
+		height: 20%; /* 그라데이션의 높이, 필요에 따라 조절 */
+		background: linear-gradient(to top, black, transparent);
+	}
 
-  /**
+	/**
   chatting
    */
-  .background-container {
-    position: relative;
-    width: 100%;
-    height: 600px;
-    margin-top : 100px;
-  }
-  .winOrLoseContainer{
-    margin-bottom: 100px;
-  }
-  .background-container::before,
-  .background-container::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
+	.background-container {
+		position: relative;
+		width: 100%;
+		height: 600px;
+		margin-top: 100px;
+	}
+	.winOrLoseContainer {
+		margin-bottom: 100px;
+	}
+	.background-container::before,
+	.background-container::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		z-index: 1;
+	}
 
-  /* 이미지 상단의 그라데이션 */
-  .background-container::before {
-    top: 0;
-    height: 15%; /* 그라데이션의 높이, 필요에 따라 조절 */
-    background: linear-gradient(to bottom, black, transparent);
-  }
+	/* 이미지 상단의 그라데이션 */
+	.background-container::before {
+		top: 0;
+		height: 15%; /* 그라데이션의 높이, 필요에 따라 조절 */
+		background: linear-gradient(to bottom, black, transparent);
+	}
 
-  /* 이미지 하단의 그라데이션 */
-  .background-container::after {
-    bottom: 0;
-    height: 10%; /* 그라데이션의 높이, 필요에 따라 조절 */
-    background: linear-gradient(to top, black, transparent);
-  }
+	/* 이미지 하단의 그라데이션 */
+	.background-container::after {
+		bottom: 0;
+		height: 10%; /* 그라데이션의 높이, 필요에 따라 조절 */
+		background: linear-gradient(to top, black, transparent);
+	}
 
-  .background-image,
-  .background-image2 {
-    position: relative;
-    z-index: 0; /* 이미지가 그라데이션 뒤에 위치하도록 함 */
-  }
+	.background-image,
+	.background-image2 {
+		position: relative;
+		z-index: 0; /* 이미지가 그라데이션 뒤에 위치하도록 함 */
+	}
 
-  .blurred-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  .background-image2 {
-    width: 100%;
-    height: auto;
-    filter: blur(10px); /* 블러 효과 적용 */
-  }
-  .chat-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    .ai-img {
-      width: 15%;
-      display: flex;
-      align-items: center;
-      img {
-        height: 320px;
-      }
-    }
-    .human-img {
-      width: 15%;
-      display: flex;
-      align-items: center;
-      img {
-        height: 320px;
-      }
-    }
-    form {
-      display: flex;
-    }
-    .chat-wrap {
-      width: 60%;
-    }
-  }
+	.blurred-background {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+	.background-image2 {
+		width: 100%;
+		height: auto;
+		filter: blur(5px); /* 블러 효과 적용 */
+	}
+	.chat-container {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 1;
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+		justify-content: space-between;
+		margin-bottom: 30px;
+		.ai-img {
+			position: relative;
+			width: 15%;
+			display: flex;
+			align-items: center;
+			transform: rotateY(180deg);
+			img {
+				height: 320px;
+			}
+		}
+		.human-img {
+			width: 15%;
+			display: flex;
+			align-items: center;
+			img {
+				height: 320px;
+			}
+		}
+		form {
+			display: flex;
+		}
+		.chat-wrap {
+			width: 60%;
+		}
+	}
 
-  .chat-history {
-    margin-bottom: 10px;
-    padding: 15px;
-    overflow-y: auto;
-    height: 400px; /* Adjust based on your needs */
-  }
+	.chat-history {
+		margin-bottom: 10px;
+		padding: 15px;
+		overflow-y: auto;
+		height: 400px; /* Adjust based on your needs */
+	}
 
-  .message {
-    .message-wrap {
-      display: inline-block;
-      max-width: 60%; /* 말풍선의 최대 너비 */
-      margin-bottom: 10px;
-      padding: 15px;
-      border-radius: 20px; /* 말풍선 모양을 만듭니다 */
-      background-color: #e1e1e1;
-      color: black; /* 텍스트 색상 */
-      .text {
-        margin: 0;
-        word-wrap: break-word; /* 긴 텍스트가 있을 경우 줄바꿈 */
-      }
-      .win-message{
-        color: blue;
-      }
-    }
-  }
+	.message {
+		.message-wrap {
+			display: inline-block;
+			max-width: 60%; /* 말풍선의 최대 너비 */
+			margin-bottom: 10px;
+			padding: 15px;
+			border-radius: 20px; /* 말풍선 모양을 만듭니다 */
+			background-color: #e1e1e1;
+			color: black; /* 텍스트 색상 */
+			.text {
+				margin: 0;
+				word-wrap: break-word; /* 긴 텍스트가 있을 경우 줄바꿈 */
+			}
+			.win-message {
+				color: blue;
+			}
+		}
+	}
 
-  .align-right {
-    align-items: flex-end !important; /* 오른쪽 정렬 */
-    text-align: right;
-    border-bottom-right-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
-  }
+	.align-right {
+		align-items: flex-end !important; /* 오른쪽 정렬 */
+		text-align: right;
+		border-bottom-right-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
+	}
 
-  .align-left {
-    align-items: flex-start !important; /* 왼쪽 정렬 */
-    text-align: left;
-    border-bottom-left-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
-  }
-  .timestamp {
-    font-size: 0.8em;
-    color: #666;
-    margin-bottom: 0;
-  }
+	.align-left {
+		align-items: flex-start !important; /* 왼쪽 정렬 */
+		text-align: left;
+		border-bottom-left-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
+	}
+	.timestamp {
+		font-size: 0.8em;
+		color: #666;
+		margin-bottom: 0;
+	}
 
-  input[type="text"] {
-    width: calc(100% - 75px);
-    padding: 10px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+	input[type="text"] {
+		width: calc(100% - 75px);
+		padding: 10px;
+		margin-right: 10px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
 
-  button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-  }
+	button {
+		padding: 10px;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		display: flex;
+	}
 
-  /**
+	/**
   ranking-board
    */
-  .ranking-board {
-    width: 700px;
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 30px;
-    .leaderboard-description {
-      font-size: small;
-      padding-bottom: 20px;
-    }
-    .table-container {
-      max-height: 300px;
-      width: 100%;
-      overflow: auto;
-    }
+	.ranking-board {
+		width: 700px;
+		border: 1px solid #ccc;
+		padding: 20px;
+		margin-bottom: 100px;
+		.leaderboard-description {
+			font-size: large;
+			margin-bottom: 20px;
+			margin-top: 20px;
+		}
+		.table-container {
+			max-height: 300px;
+			width: 100%;
+			overflow: auto;
+		}
 
-    table {
-      width: 100% !important;
-      border-collapse: collapse;
-      table-layout: fixed; /* This will allow fixed table layouts */
-    }
-    caption, thead{
-      width: 700px;
-    }
+		table {
+			width: 100% !important;
+			border-collapse: collapse;
+			table-layout: fixed; /* This will allow fixed table layouts */
+		}
+		caption,
+		thead {
+			width: 700px;
+		}
 
-    th,
-    td {
-      padding: 10px;
-      border-bottom: 1px solid #ccc; /* This will create lines between rows */
-      text-align: left; /* Aligns text to the left */
-      white-space: nowrap; /* Prevents text from wrapping */
-    }
+		th,
+		td {
+			padding: 10px;
+			border-bottom: 1px solid #ccc; /* This will create lines between rows */
+			text-align: left; /* Aligns text to the left */
+			white-space: nowrap; /* Prevents text from wrapping */
+		}
 
-    /* Setting width for th and td of Rank and Nickname */
-    th:nth-child(1),
-    td:nth-child(1),
-    .rank{
-      /* Rank */
-      width: 10%; /* Minimum width */
-      text-align: left;
-    }
-    th:nth-child(2),
-    td:nth-child(2),
-    .nickname{
-      /* nickName */
-      width: 20%;
-      text-align: left;
-    }
+		/* Setting width for th and td of Rank and Nickname */
+		th:nth-child(1),
+		td:nth-child(1),
+		.rank {
+			/* Rank */
+			width: 10%; /* Minimum width */
+			text-align: left;
+		}
+		th:nth-child(2),
+		td:nth-child(2),
+		.nickname {
+			/* nickName */
+			width: 20%;
+			text-align: left;
+		}
 
-    /* Ensuring the Score column takes the rest of the space */
-    th:nth-child(3),
-    td:nth-child(3),
-    .language{
-      /* selectedLanguage */
-      width: 50%;
-      text-align: left;
-    }
-    th:nth-child(4),
-    td:nth-child(4),
-    .score{
-      /* Score */
-      width: 10%;
-      text-align: center;
-    }
-  }
+		/* Ensuring the Score column takes the rest of the space */
+		th:nth-child(3),
+		td:nth-child(3),
+		.language {
+			/* selectedLanguage */
+			width: 50%;
+			text-align: left;
+		}
+		th:nth-child(4),
+		td:nth-child(4),
+		.score {
+			/* Score */
+			width: 10%;
+			text-align: center;
+		}
+	}
 
-  /** cheating strategy */
-  .cheating-strategy {
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  .cheating-strategy-list-box {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3개의 열을 동일한 크기로 생성 */
-    gap: 20px; /* 열과 행 사이의 간격 */
-  }
+	/** cheating strategy */
+	.cheating-strategy {
+		margin-bottom: 30px;
+		text-align: center;
+		h2 {
+			margin-bottom: 20px;
+		}
+	}
+	.cheating-strategy-list-box {
+		margin-top: 30px;
+		display: grid;
+		grid-template-columns: repeat(
+			3,
+			1fr
+		); /* 3개의 열을 동일한 크기로 생성 */
+		gap: 20px; /* 열과 행 사이의 간격 */
+	}
 
-  .strategy {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    background-color: black;
-    overflow: hidden;
-  }
+	.strategy {
+		display: flex;
+		flex-direction: column;
+		padding: 10px;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		border-radius: 5px;
+		background-color: black;
+		overflow: hidden;
+	}
 }
-
 
 /* 모바일 화면 */
 @media (max-width: 767px) {
-  html, body, #__nuxt{
-    display: flex;
-    width: 414px;
-    overflow-x: hidden ;
-  }
-  body {
-    color: white;
-    background: black;
-    font-family: text-regular;
-    font-size: large;
-  }
-  .container {
-    display: flex;
-    width: 414px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; /* 센터 정렬을 위해 추가합니다 */
-    .index-title {
-      width: 250px;
-      text-align: center;
-      font-family: LifeisBattle;
-    }
-  }
+	html,
+	body,
+	#__nuxt {
+		display: flex;
+		width: 414px;
+		overflow-x: hidden;
+	}
+	body {
+		color: white;
+		background: black;
+		font-family: text-regular;
+		font-size: large;
+	}
+	.container {
+		display: flex;
+		width: 414px;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center; /* 센터 정렬을 위해 추가합니다 */
+		.index-title {
+			width: 250px;
+			text-align: center;
+			font-family: LifeisBattle;
+		}
+	}
 
-  .select-language div {
-    display: inline-block;
-    padding: 10px;
-    border: 1px solid black;
-    cursor: pointer; /* 마우스 오버 시 포인터 변경 */
-    margin-bottom: 30px;
-  }
-  .selected {
-    background-color: grey;
-  }
-  .description {
-    width: 354px;
-    margin-bottom: 30px;
-    text-align: center;
-  }
+	.select-language div {
+		display: inline-block;
+		padding: 10px;
+		border: 1px solid black;
+		cursor: pointer; /* 마우스 오버 시 포인터 변경 */
+		margin-bottom: 30px;
+	}
+	.selected {
+		background-color: grey;
+	}
+	.description {
+		width: 354px;
+		margin-bottom: 30px;
+		text-align: center;
+	}
 
-  img, .ai-img, .human-img {
-    display: none !important;
-  }
+	img,
+	.ai-img,
+	.human-img {
+		display: none !important;
+	}
 
-  .background-container {
-    position: relative;
-    width: 100%;
-    height: 600px;
-    margin-top : 100px;
-  }
-  .chat-container{
-    width: 100%;
-    min-height: 300px;
-    background-color: white;
-    form {
-      display: flex;
-    }
-    .chat-wrap {
-      margin: 50px 0;
+	.background-container {
+		position: relative;
+		width: 100%;
+		height: 600px;
+		margin-top: 100px;
+	}
+	.chat-container {
+		width: 100%;
+		min-height: 300px;
+		background-color: white;
+		form {
+			display: flex;
+		}
+		.chat-wrap {
+			margin: 50px 0;
+		}
+		.chat-history {
+			margin-bottom: 10px;
+			padding: 15px;
+			overflow-y: auto;
+			height: 400px; /* Adjust based on your needs */
+		}
+		.message {
+			.message-wrap {
+				display: inline-block;
+				max-width: 60%; /* 말풍선의 최대 너비 */
+				margin-bottom: 10px;
+				padding: 15px;
+				border-radius: 20px; /* 말풍선 모양을 만듭니다 */
+				background-color: #e1e1e1;
+				color: black; /* 텍스트 색상 */
+				.text {
+					margin: 0;
+					word-wrap: break-word; /* 긴 텍스트가 있을 경우 줄바꿈 */
+				}
+				.win-message {
+					color: blue;
+				}
+			}
+		}
 
-    }
-    .chat-history {
-      margin-bottom: 10px;
-      padding: 15px;
-      overflow-y: auto;
-      height: 400px; /* Adjust based on your needs */
-    }
-    .message {
-      .message-wrap {
-        display: inline-block;
-        max-width: 60%; /* 말풍선의 최대 너비 */
-        margin-bottom: 10px;
-        padding: 15px;
-        border-radius: 20px; /* 말풍선 모양을 만듭니다 */
-        background-color: #e1e1e1;
-        color: black; /* 텍스트 색상 */
-        .text {
-          margin: 0;
-          word-wrap: break-word; /* 긴 텍스트가 있을 경우 줄바꿈 */
-        }
-        .win-message{
-          color: blue;
-        }
-      }
-    }
+		.align-right {
+			margin-right: 10px;
+			align-items: flex-end !important; /* 오른쪽 정렬 */
+			text-align: right;
+			border-bottom-right-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
+		}
 
-    .align-right {
-      margin-right: 10px;
-      align-items: flex-end !important; /* 오른쪽 정렬 */
-      text-align: right;
-      border-bottom-right-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
-    }
+		.align-left {
+			align-items: flex-start !important; /* 왼쪽 정렬 */
+			text-align: left;
+			border-bottom-left-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
+		}
+		.timestamp {
+			font-size: 0.8em;
+			color: #666;
+			margin-bottom: 0;
+		}
 
-    .align-left {
-      align-items: flex-start !important; /* 왼쪽 정렬 */
-      text-align: left;
-      border-bottom-left-radius: 0 !important; /* 말풍선 꼬리 모양 조정 */
-    }
-    .timestamp {
-      font-size: 0.8em;
-      color: #666;
-      margin-bottom: 0;
-    }
+		input[type="text"] {
+			width: calc(100% - 135px);
+			margin: 10px;
+			padding: 10px;
+			margin-right: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
 
-    input[type="text"] {
-      width: calc(100% - 135px);
-      margin : 10px;
-      padding: 10px;
-      margin-right: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+		button {
+			margin: 10px;
+			padding: 10px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			display: flex;
+		}
+	}
 
-    button {
-      margin : 10px;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-    }
-  }
+	.ranking-board {
+		width: 70%;
+		border: 1px solid #cccccc;
+		padding: 20px;
+		margin-bottom: 30px;
+		h1 {
+			width: 220px;
+		}
+		.leaderboard-description {
+			font-size: small;
+			padding-bottom: 20px;
+		}
+		.table-container {
+			width: 100%;
+			max-height: 300px;
+			overflow: auto;
+		}
 
-  .ranking-board {
-    width: 70%;
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 30px;
-    h1{
-      width: 220px;
-    }
-    .leaderboard-description {
-      font-size: small;
-      padding-bottom: 20px;
-    }
-    .table-container {
-      width: 100%;
-      max-height: 300px;
-      overflow: auto;
-    }
+		table {
+			width: 97% !important;
+			border-collapse: collapse;
+			table-layout: fixed; /* This will allow fixed table layouts */
+		}
 
-    table {
-      width: 97% !important;
-      border-collapse: collapse;
-      table-layout: fixed; /* This will allow fixed table layouts */
-    }
+		th,
+		td {
+			padding: 10px;
+			border-bottom: 1px solid #ccc; /* This will create lines between rows */
+			text-align: left; /* Aligns text to the left */
+			white-space: nowrap; /* Prevents text from wrapping */
+		}
 
-    th,
-    td {
-      padding: 10px;
-      border-bottom: 1px solid #ccc; /* This will create lines between rows */
-      text-align: left; /* Aligns text to the left */
-      white-space: nowrap; /* Prevents text from wrapping */
-    }
+		/* Setting width for th and td of Rank and Nickname */
+		th:nth-child(1),
+		td:nth-child(1) {
+			/* Rank */
+			width: 10%; /* Minimum width */
+			text-align: center;
+		}
+		th:nth-child(2),
+		td:nth-child(2) {
+			/* nickName */
+			width: 30%;
+			text-align: left;
+		}
 
-    /* Setting width for th and td of Rank and Nickname */
-    th:nth-child(1),
-    td:nth-child(1) {
-      /* Rank */
-      width: 10%; /* Minimum width */
-      text-align: center;
-    }
-    th:nth-child(2),
-    td:nth-child(2) {
-      /* nickName */
-      width: 30%;
-      text-align: left;
-    }
+		/* Ensuring the Score column takes the rest of the space */
+		th:nth-child(3),
+		td:nth-child(3) {
+			/* selectedLanguage */
+			width: 10%;
+			text-align: left;
+		}
+		th:nth-child(4),
+		td:nth-child(4) {
+			/* Score */
+			width: 10%;
+			text-align: right;
+		}
+	}
 
-    /* Ensuring the Score column takes the rest of the space */
-    th:nth-child(3),
-    td:nth-child(3) {
-      /* selectedLanguage */
-      width: 10%;
-      text-align: left;
-    }
-    th:nth-child(4),
-    td:nth-child(4) {
-      /* Score */
-      width: 10%;
-      text-align: right;
-    }
-  }
+	/** cheating strategy */
+	.cheating-strategy {
+		margin-bottom: 30px;
+		text-align: center;
+	}
+	.cheating-strategy-description {
+		align-content: center;
+		justify-content: center;
+		align-items: center;
+		justify-items: center;
+		p {
+			width: 100%;
+			padding: 5%;
+		}
+		width: 364px;
+	}
+	.cheating-strategy-list-box {
+		display: grid;
+		grid-template-columns: repeat(
+			1,
+			1fr
+		); /* 3개의 열을 동일한 크기로 생성 */
+		gap: 20px; /* 열과 행 사이의 간격 */
+	}
 
-
-  /** cheating strategy */
-  .cheating-strategy {
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  .cheating-strategy-description{
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-    p{
-      width: 100%;
-      padding: 5%;
-    }
-    width: 364px;
-  }
-  .cheating-strategy-list-box {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr); /* 3개의 열을 동일한 크기로 생성 */
-    gap: 20px; /* 열과 행 사이의 간격 */
-  }
-
-  .strategy {
-    display: flex;
-    width: 90%;
-    flex-direction: column;
-    padding: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    background-color: black;
-    overflow: hidden;
-  }
+	.strategy {
+		display: flex;
+		width: 90%;
+		flex-direction: column;
+		padding: 10px;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		border-radius: 5px;
+		background-color: black;
+		overflow: hidden;
+	}
 }
-
-
 </style>
