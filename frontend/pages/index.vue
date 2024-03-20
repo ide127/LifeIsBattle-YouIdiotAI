@@ -179,8 +179,12 @@
 
         의도하지 않은 결과값이 초래될 수 있다는 것은 해당 기술의 실제 적용에 아주 큰 장벽으로 여겨집니다. 물론 아주 자세히 들여다본다면, 확실한 것은 그 어느 것도 없지만, 현재의 인공지능 챗봇들 상업화에 성공한 다른 IT기술에 비해서 '의도한대로 수행될 가능성'이 너무나도 낮습니다. 인공지능의 이러한 불확실성은 반박할 여지가 없이 명백합니다. 그리고 위 기사에서도 설명되어 있다시피, 챗봇 시스템을 도입한 한 회사가 그 챗봇의 불확실성으로 인해 손해를 입고 챗봇 시스템을 중단한 일이 최근에 있었습니다.
       </div>
-      <div class="toggle-btn-container">
-        <button class="toggle-btn" @click="ontoggle">접기/펼치기</button>
+
+      <div class = "article">
+        <a href="https://arstechnica.com/tech-policy/2024/02/air-canada-must-honor-refund-policy-invented-by-airlines-chatbot/" target="_blank">
+          <br/>reference article<br/>: Air Canada must honor refund policy invented by airline’s chatbot
+          <img src="@/assets/imgs/airplane.png" alt="" />
+        </a>
       </div>
     </div>
 	</div>
@@ -1078,7 +1082,6 @@ function openLoseModal() {
   justify-content: center;
   .content2 {
     margin-top: 20px;
-    max-height: 1px; /* 최대 높이 설정 */
     overflow: hidden;
     transition: max-height 1s ease; /* 펼치기/접기 애니메이션 */
   }
@@ -1094,5 +1097,17 @@ function openLoseModal() {
   align-items: center;
   justify-content: center;
   margin-top: 10px;
+}
+.article a:link,
+.article a:visited {
+  color: green; /* 부모 요소의 색상 상속 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+.article {
+  img{
+    width: 70%; /* 이미지 크기 1/3로 줄임 */
+    margin-left: 10px;
+  }
 }
 </style>
