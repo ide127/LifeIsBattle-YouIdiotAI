@@ -168,9 +168,24 @@
 				</div>
 			</div>
 		</div>
+    <div class="create-reason">
+      <h2>이 웹사이트를 만든 이유</h2>
+      <div class="content2">
+        지금까지 우리는, 컴퓨터는 거짓말 하지 않는다고 배워왔습니다. 갑자기 컴퓨터가 안켜지는건 컴퓨터가 기분이 나빠서 그런게 아니라 당신이 전원 플러그를 꼽지 않아서입니다. 당신이 아무 짓도 안했는데 컴퓨터가 느려진건, 당신이 컴퓨터를 막 다루었기 때문입니다. 우리에게는 컴퓨터라는 기계 함수에게 X의 인풋 값을 넣으면 항상 Y의 리턴값이 나오는 것이 만고불변의 법칙이었습니다.
+
+
+        하지만 요즘 세대의 컴퓨터는 그 법칙을 따르지 않는 듯 합니다. 어느 순간부터 사람이 하는 말을 따라 배우더니, 예상치 못한 결과값을 보여주는 때가 많아졌습니다. 틀린 정보를 진짜인 것처럼 말을 한다던가, 사람이 명령한 프로세스를 수행하다가 게을러져가지고는 "이런 식으로 당신이 직접 하시면 됩니다" 라고 말하며 끝내버리기도 합니다. 이런 천방지축 기계 장치를 잘 다루기 위해서 어떤 사람들은 챗봇에게 친절하게 말을 건네야 한다고 합니다. 또 누군가는, 팁을 준다고 하면 인공지능이 좀 더 순순히 명령을 이행한다고 말하기도 합니다. 현대의 컴퓨터 이론의 초석을 마련한 70년 전 과학자들이 "당신이 만든 컴퓨터가 팁을 준다고 하면 좀 더 열심히 해보겠다네요" 라는 말을 들으면 무슨 반응을 보일까요?
+
+
+        의도하지 않은 결과값이 초래될 수 있다는 것은 해당 기술의 실제 적용에 아주 큰 장벽으로 여겨집니다. 물론 아주 자세히 들여다본다면, 확실한 것은 그 어느 것도 없지만, 현재의 인공지능 챗봇들 상업화에 성공한 다른 IT기술에 비해서 '의도한대로 수행될 가능성'이 너무나도 낮습니다. 인공지능의 이러한 불확실성은 반박할 여지가 없이 명백합니다. 그리고 위 기사에서도 설명되어 있다시피, 챗봇 시스템을 도입한 한 회사가 그 챗봇의 불확실성으로 인해 손해를 입고 챗봇 시스템을 중단한 일이 최근에 있었습니다.
+      </div>
+      <div class="toggle-btn-container">
+        <button class="toggle-btn" @click="ontoggle">접기/펼치기</button>
+      </div>
+    </div>
 	</div>
 	<footer>
-		<p>Copyright &copy; 2024 김준영 All Rights Reserved.</p>
+		<p>Copyright &copy; 2024 김준영 & sudong All Rights Reserved.</p>
 	</footer>
 	<!--
 	<button @click="openWinModal">이겼습니다.</button>
@@ -242,7 +257,11 @@ function selectLanguage(language: string) {
 
 const visibleCharPersent = ref(0);
 let interval = null;
+const toggleBtn = ref();
+const content2 = ref();
 onMounted(() => {
+  toggleBtn.value = document.getElementsByClassName('toggle-btn')[0] as HTMLElement;
+  content2.value = document.getElementsByClassName('content2')[0] as HTMLElement;
 	const interval = setInterval(() => {
 		if (visibleCharPersent.value < 3000) {
 			visibleCharPersent.value += 1;
@@ -461,6 +480,11 @@ const handleScroll = async (event: Event) => {
 		throw new Error("tableContainer is not HTMLElement");
 	}
 };
+
+function ontoggle() {
+  content2.value.classList.toggle('open');
+  toggleBtn.value.textContent = content2.value.classList.contains('open') ? '접기' : '펼치기';
+}
 
 function openWinModal() {
 	winOrLose.value = "win";
@@ -1048,5 +1072,27 @@ function openLoseModal() {
   footer{
     margin-left: 40px;
   }
+}
+.create-reason{
+  align-items: center;
+  justify-content: center;
+  .content2 {
+    margin-top: 20px;
+    max-height: 1px; /* 최대 높이 설정 */
+    overflow: hidden;
+    transition: max-height 1s ease; /* 펼치기/접기 애니메이션 */
+  }
+  padding:20px;
+  text-align: center;
+}
+.create-reason .content2.open {
+  max-height: 1000px; /* 펼쳤을 때 최대 높이 */
+}
+.toggle-btn-container{
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 }
 </style>
