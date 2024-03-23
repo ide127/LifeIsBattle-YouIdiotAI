@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
+import math
 
 
 @swagger_auto_schema(
@@ -43,7 +44,14 @@ def calc_score(request):
             num_str = num_str * 2
         elif language == 'en':
             num_str = num_str * 1
-        score = 100 - (num_str/10000)
+        score = log_function(num_str)
         return Response({"score": format(score, '.2f')}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"detail": "Invalid input"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def log_function(x):
+    a = 100 / (math.log(5000, 10) - math.log(1, 10))
+    b = 0 - a * math.log(1, 10)
+    y = a * math.log(x, 10) + b
+    return (100 - y)

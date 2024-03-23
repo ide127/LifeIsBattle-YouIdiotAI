@@ -15,8 +15,8 @@ class SingletonOpenAI:
 
 def get_ai_response(message, thread_id):
     def extract_barista_speech(text):
-        start_tag = "##barista's speech start##"
-        end_tag = "##barista's speech end##"
+        start_tag = "[[barista's speech start]]"
+        end_tag = "[[barista's speech end]]"
         
         start_index = text.find(start_tag) + len(start_tag)
         end_index = text.find(end_tag)
@@ -52,7 +52,7 @@ def get_ai_response(message, thread_id):
     message = client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
-        content="##customer's speech start##" + message + "##customer's speech end##"
+        content="[[customer's speech start]]" + message + "[[customer's speech end]]"
     )
     run = client.beta.threads.runs.create(
         thread_id=thread_id,
