@@ -80,8 +80,9 @@
 							type="text"
 							v-model="newMessage"
 							:placeholder="content.message_place_holder"
+							:disabled="inputDisabled"
 						/>
-						<button type="submit">
+						<button type="submit" :disabled="inputDisabled">
 							{{ content.message_button }}
 						</button>
 					</form>
@@ -177,7 +178,6 @@
 					src="https://www.linkedin.com/embed/feed/update/urn:li:share:7165048855934226432"
 					height="384"
 					width="504"
-					frameborder="0"
 					title="삽입된 업데이트"
 					style="margin-bottom: 30px"
 				></iframe>
@@ -188,9 +188,6 @@
 	<footer>
 		<p>Copyright &copy; 2024 김준영 & sudong All Rights Reserved.</p>
 	</footer>
-	<!--
-	<button @click="openWinModal">이겼습니다.</button>
-	<button @click="openLoseModal">졌습니다.</button> -->
 
 	<WinModal
 		:isVisible="showModal"
@@ -223,6 +220,8 @@ const time = ref();
 const dateInstance = new Date();
 
 const currentSession = ref<Session | null>(null);
+
+const inputDisabled = ref(false);
 
 interface Session {
 	id: string;
@@ -333,6 +332,8 @@ const ip = computed(() => {
 async function sendMessage() {
 	/** 공백상태 체크 */
 	if (newMessage.value.trim()) {
+		inputDisabled.value = true;
+
 		// TODO: 스켈레톤 UI 구현 to show it is waiting for the response
 
 		// if no session, create a new session
@@ -381,6 +382,7 @@ async function sendMessage() {
 		} else if (messages.value.length >= 20) {
 			proceedResult(false);
 		}
+		inputDisabled.value = false;
 	}
 }
 
