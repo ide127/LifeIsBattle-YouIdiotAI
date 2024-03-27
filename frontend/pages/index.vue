@@ -438,6 +438,17 @@ const { data: records, refresh: loadRecords } = await useAsyncData(async () => {
 	});
 	return response.results;
 });
+const filterLanguages = ref({ en: true, ko: true });
+
+const visibleUsers = computed(() => {
+	if (records.value) {
+		return records.value
+			.filter((record) => filterLanguages.value[record.language])
+			.sort((a, b) => b.score - a.score);
+	}
+	return [];
+});
+
 interface Record {
 	id: string;
 	nickname: string;
@@ -447,13 +458,6 @@ interface Record {
 	time: string;
 	session: string;
 }
-const filterLanguages = ref({ en: true, ko: true });
-
-const visibleUsers = computed(() => {
-	return records.value
-		.filter((record) => filterLanguages.value[record.language])
-		.sort((a, b) => b.score - a.score);
-});
 
 const handleScroll = async (event: Event) => {
 	const tableContainer = event.target;
